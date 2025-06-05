@@ -15,7 +15,7 @@ public class AnimationLogo {
      * @param logo L'ImageView représentant le logo.
      */
     public static void appliquerAnimation(ImageView logo) {
-        ScaleTransition scale = new ScaleTransition(Duration.seconds(1.5), logo);
+        ScaleTransition scale = new ScaleTransition(Duration.seconds(2), logo);
         scale.setFromX(1.0);
         scale.setFromY(1.0);
         scale.setToX(1.1);
