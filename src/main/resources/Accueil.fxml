@@ -13,7 +13,7 @@
     <!-- Logo Bomberman -->
     <ImageView fx:id="logoImage"  id="logoImage" fitWidth="800" preserveRatio="true">
         <image>
-            <Image url="@images/Accueil/logo.png"/>
+            <Image url="@images/home/logo.png"/>
         </image>
     </ImageView>
 
@@ -21,16 +21,11 @@
     <Label text="Choisir mode de jeu :" styleClass="label"/>
 
     <!-- Bouton pour démarrer -->
-    <Button fx:id="jouerButton"
-            text="Solo"
-            onAction="#onJouerClicked"
-            layoutX="500"
-            layoutY="600"
-            styleClass="button" />
 
+    <Button text="Jouer" onAction="#onJouerClicked" layoutX="100" layoutY="100"/>
 
     <!-- Bouton pour mode multijoueur 1V1 -->
-    <Button text="Duo" styleClass="button"/>
+    <Button text="Multiplayer" styleClass="button"/>
 
     <!-- Bouton pour mode contre machine 1VM -->
     <Button text="Contre Machine" styleClass="button"/>

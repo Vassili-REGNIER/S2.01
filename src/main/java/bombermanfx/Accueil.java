@@ -12,7 +12,6 @@ public class Accueil extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-        Font.loadFont(getClass().getResourceAsStream("/fonts/PressStart2P-Regular.ttf"), 16);
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
 
         stage.setTitle("BombermanFX - Accueil");
