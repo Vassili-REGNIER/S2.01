@@ -13,7 +13,7 @@
     <!-- Logo Bomberman -->
     <ImageView fx:id="logoImage"  id="logoImage" fitWidth="800" preserveRatio="true">
         <image>
-            <Image url="@image2/logo.png"/>
+            <Image url="@images/home/logo.png"/>
         </image>
     </ImageView>
 
