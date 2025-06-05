@@ -1,19 +1,35 @@
 package controller;
 
+import bombermanfx.Main;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 /**
- * Contrôleur de la vue Accueil.
- * Il gère les événements sur la page d'accueil (clic sur le bouton, etc.).
+ * Contrôleur de la scène d'accueil de BombermanFX.
  */
 public class AccueilController {
 
     /**
-     * Bouton pour lancer le jeu.
+     * Méthode appelée lors du clic sur le bouton "Jouer".
+     * Ferme la fenêtre d'accueil et ouvre la fenêtre principale du jeu.
+     *
+     * @param event L'événement déclenché par le clic sur le bouton.
      */
     @FXML
-    private Button jouerButton;
+    private void onJouerClicked(ActionEvent event) {
+        // Fermer la fenêtre d'accueil
+        Stage accueilStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        accueilStage.close();
 
-    // L'action sera ajoutée dans la prochaine étape.
+        // Lancer la fenêtre principale du jeu
+        try {
+            Main jeu = new Main();
+            Stage gameStage = new Stage();
+            jeu.start(gameStage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
