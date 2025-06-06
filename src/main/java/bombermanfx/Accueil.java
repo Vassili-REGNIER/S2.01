@@ -2,40 +2,43 @@ package bombermanfx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * Classe principale de l'application BombermanFX qui gère l'écran d'accueil.
+ */
 public class Accueil extends Application {
+
+    private Scene scene;
 
     @Override
     public void start(Stage stage) throws Exception {
+        // Chargement du fichier FXML d'accueil
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-        // Charge la police depuis le dossier resources
-        //Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf"), 10);
+        Parent root = fxmlLoader.load();
 
-        // Chargez la police AVANT de créer la scène
-        Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf"), 16);
+        // Création de la scène avec les dimensions spécifiées
+        scene = new Scene(root, 1200, 800);
 
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+        // Ne plus gérer le bouton thème ici, c'est fait dans le controller
 
+        // Configuration de la fenêtre principale
         stage.setTitle("BombermanFX - Accueil");
         stage.setScene(scene);
-
-        stage.setFullScreen(true); // Plein écran complet (sans barre de titre)
-        stage.setFullScreenExitHint("Appuyez sur ÉCHAP pour quitter le plein écran"); // Message personnalisé
+        stage.setFullScreen(true);
+        stage.setFullScreenExitHint("Appuyez sur ÉCHAP pour quitter le plein écran");
         stage.show();
 
+        // Recherche et animation du logo d'accueil
         ImageView logo = (ImageView) scene.lookup("#logoImage");
         if (logo != null) {
             AnimationLogo.appliquerAnimation(logo);
         } else {
             System.out.println("⚠️ logoImage non trouvé dans le FXML !");
         }
-       // Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf"), 10);
-        //System.out.println("✅ Police chargée ? " + (font != null));
-
     }
 
     public static void main(String[] args) {

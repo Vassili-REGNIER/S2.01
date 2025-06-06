@@ -5,17 +5,15 @@ import bombermanfx.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
- * Contrôleur pour la scène d'accueil de BombermanFX.
- * Gère les interactions utilisateur sur la page d'accueil, y compris
- * la gestion du son, la navigation entre menus, et le lancement du jeu.
- */
+import java.net.URL;
+
 public class AccueilController {
 
     @FXML
@@ -30,14 +28,15 @@ public class AccueilController {
     @FXML
     private VBox multiplayerMenu;
 
-    private boolean isMuted = false;
+    @FXML
+    private Button themeButton;
 
-    /**
-     * Méthode appelée lors du clic sur le bouton "Jouer".
-     * Ferme la fenêtre d'accueil et lance la scène principale du jeu.
-     *
-     * @param event L'événement déclenché par le clic.
-     */
+    @FXML
+    private VBox root;
+
+    private boolean isMuted = false;
+    private boolean isDarkTheme = false;
+
     @FXML
     public void onJouerClicked(ActionEvent event) {
         Stage stageAccueil = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -53,10 +52,6 @@ public class AccueilController {
         }
     }
 
-    /**
-     * Méthode appelée lorsque l'utilisateur clique sur le bouton de son.
-     * Permet d'activer/désactiver la musique de fond.
-     */
     @FXML
     private void onToggleSound() {
         if (isMuted) {
@@ -66,14 +61,9 @@ public class AccueilController {
             MusicPlayer.stopMusic();
             soundIcon.setImage(new Image(getClass().getResource("/images/home/sound-off.png").toExternalForm()));
         }
-
         isMuted = !isMuted;
     }
 
-    /**
-     * Méthode appelée lorsque l'utilisateur clique sur "Multiplayer".
-     * Affiche le sous-menu multijoueur et masque le menu principal.
-     */
     @FXML
     public void onMultiplayerClicked() {
         mainMenu.setVisible(false);
@@ -82,10 +72,6 @@ public class AccueilController {
         multiplayerMenu.setManaged(true);
     }
 
-    /**
-     * Méthode appelée lorsqu'on clique sur "Retour" dans le sous-menu.
-     * Revient au menu principal depuis le menu multijoueur.
-     */
     @FXML
     public void onBackToMainMenu() {
         multiplayerMenu.setVisible(false);
@@ -94,31 +80,16 @@ public class AccueilController {
         mainMenu.setManaged(true);
     }
 
-    /**
-     * Méthode appelée lorsqu'on clique sur le bouton "1v1".
-     * À implémenter : démarre une partie multijoueur en local.
-     */
     @FXML
     public void on1v1Clicked() {
         System.out.println("Mode multijoueur 1v1 sélectionné");
-        // TODO: Logique du mode 1v1
     }
 
-    /**
-     * Méthode appelée lorsqu'on clique sur "Contre IA" dans le menu multijoueur.
-     * À implémenter : démarre une partie contre l'ordinateur.
-     */
     @FXML
     public void onVsAIInMultiplayerClicked() {
         System.out.println("Mode multijoueur contre IA sélectionné");
-        // TODO: Logique du mode contre IA
     }
 
-    /**
-     * Permet de quitter l'application via un bouton dans le menu principal.
-     *
-     * @param event L'événement de clic sur le bouton Quitter.
-     */
     @FXML
     private void onQuitterClicked(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -126,10 +97,27 @@ public class AccueilController {
         MusicPlayer.stopMusic();
     }
 
-    /**
-     * Initialise le contrôleur après le chargement du FXML.
-     * Initialise l'icône sonore et démarre la musique de fond.
-     */
+    @FXML
+    private void switchTheme() {
+        isDarkTheme = !isDarkTheme;
+
+        Scene scene = root.getScene();
+        if (scene == null) {
+            System.err.println("Scene non encore initialisée");
+            return;
+        }
+
+        scene.getStylesheets().clear();
+
+        if (isDarkTheme) {
+            scene.getStylesheets().add(getClass().getResource("/style/style1.css").toExternalForm());
+            themeButton.setText("Mode Clair");
+        } else {
+            scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
+            themeButton.setText("Mode Sombre");
+        }
+    }
+
     @FXML
     public void initialize() {
         if (soundIcon != null) {
@@ -137,12 +125,23 @@ public class AccueilController {
         }
         MusicPlayer.playMusic("/sounds/menu.mp3");
 
-        // Afficher uniquement le menu principal au départ
-        if (mainMenu != null && multiplayerMenu != null) {
-            mainMenu.setVisible(true);
-            mainMenu.setManaged(true);
-            multiplayerMenu.setVisible(false);
-            multiplayerMenu.setManaged(false);
+        mainMenu.setVisible(true);
+        mainMenu.setManaged(true);
+        multiplayerMenu.setVisible(false);
+        multiplayerMenu.setManaged(false);
+
+        // Ajout d'un listener sur la scène pour s'assurer qu'elle est prête avant d'ajouter les styles
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.getStylesheets().clear();
+                newScene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
+            }
+        });
+
+        if (root.getScene() != null) {
+            root.getScene().getStylesheets().clear();
+            root.getScene().getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
         }
+
     }
 }

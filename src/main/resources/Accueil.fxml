@@ -8,7 +8,7 @@
 <?import javafx.geometry.Pos?>
 <?import javafx.scene.layout.HBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AccueilController" stylesheets="@style/style.css">
+<VBox alignment="CENTER" fx:id="root" spacing="20.0" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AccueilController" stylesheets="@style/style.css">
 
     <!-- Logo Bomberman -->
     <ImageView fx:id="logoImage" id="logoImage" fitWidth="800" preserveRatio="true">
@@ -21,7 +21,9 @@
     <VBox fx:id="mainMenu" alignment="CENTER" spacing="10">
         <Button text="Solo" onAction="#onJouerClicked" styleClass="button"/>
         <Button text="Multijoueur" onAction="#onMultiplayerClicked" styleClass="button"/>
-       <!-- <Button text="Contre Machine" styleClass="button"/> -->
+        <!-- Bouton de changement de thème -->
+        <Button fx:id="themeButton" onAction="#switchTheme" text="Mode Sombre" styleClass="button" />
+        <!--<Button text="Contre Machine" styleClass="button"/>-->
         <Button text="Quitter" onAction="#onQuitterClicked" styleClass="button"/>
     </VBox>
 
@@ -38,7 +40,7 @@
             <graphic>
                 <ImageView fx:id="soundIcon" fitHeight="40" fitWidth="40">
                     <image>
-                       <Image url="@images/home/sound-on.png"/>
+                        <Image url="@images/home/sound-on.png"/>
                     </image>
                 </ImageView>
             </graphic>
