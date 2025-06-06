@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import ui.Assets;
+import utils.LevelsCreator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +27,7 @@ public class GameController extends BorderPane {
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
-
+    private Player player2;
     private Player player;
     private ArrayList<Entity> staticEntities; // murs, blocs
     private ArrayList<Entity> dynamicEntities; // bombes, explosions, ennemis, etc.
@@ -51,9 +52,11 @@ public class GameController extends BorderPane {
         Assets.load();
 
         // 3. Créer les entités
+        player2 = new Player(400, 400);
         player = new Player(500, 500);
-        staticEntities = new ArrayList<>();
-        dynamicEntities = new ArrayList<>();
+        staticEntities = LevelCreator.getLevel1StaticEntities();
+        dynamicEntities = LevelCreator.getLevel1DynamicEntities();
+
 
         // Exemple : ajout d’un mur
         staticEntities.add(new Wall(48, 48));

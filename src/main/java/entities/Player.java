@@ -5,22 +5,21 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ui.Assets;
 import ui.Constants;
-import utils.Direction;
 
 import static ui.CollisionCalculator.isColliding;
 
 public class Player extends Entity {
 
     private double speed = (double) Constants.TILE_SIZE / 5;      // vitesse de déplacement en pixels par frame
-    //private Direction direction;     // direction du joueur (pas obligatoire au départ)
 
     private boolean movingUp, movingDown, movingLeft, movingRight;
+    private Image currentImage;
 
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
         this.size = Constants.TILE_SIZE;
-        //this.direction = Direction.DOWN;  // direction initiale (exemple)
+        this.currentImage = Assets.player1Down;  // direction initiale (exemple)
     }
 
     // Méthodes pour gérer les entrées clavier (appelées depuis le contrôleur)
@@ -34,19 +33,15 @@ public class Player extends Entity {
         double dx = 0, dy = 0;
         if (movingUp) {
             dy -= speed;
-            //direction = Direction.UP;
         }
         if (movingDown) {
             dy += speed;
-            //direction = Direction.DOWN;
         }
         if (movingLeft) {
             dx -= speed;
-            //direction = Direction.LEFT;
         }
         if (movingRight) {
             dx += speed;
-            //direction = Direction.RIGHT;
         }
 
         // Déplace le joueur
@@ -62,12 +57,23 @@ public class Player extends Entity {
                 return;
             }
         }
-
-
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.drawImage(Assets.playerSprite, x, y, size, size);
+         if (movingUp) {
+             currentImage = Assets.player1Up;
+         }
+         else if (movingRight) {
+             currentImage = Assets.player1Right;
+         }
+         else if (movingLeft) {
+             currentImage = Assets.player1Left;
+         }
+         else if (movingDown) {
+             currentImage = Assets.player1Down;
+         }
+         gc.drawImage(currentImage, x, y);
     }
+
 }
