@@ -10,6 +10,7 @@ public class Assets {
     public static Image background;
     public static Image player1Down;
     public static Image wallSprite;
+    public static Image wallBreakable;
     public static Image bombSprite;
     public static Image explosionSprite;
 
@@ -17,7 +18,7 @@ public class Assets {
         try {
             background = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/background.png")).toExternalForm());
             wallSprite = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/wall2.png")).toExternalForm());
-
+            wallBreakable = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/wall.png")).toExternalForm());
             player1Down = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Down.png")).toExternalForm());
             player1Up = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Up.png")).toExternalForm());
             player1Right = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Right.png")).toExternalForm());

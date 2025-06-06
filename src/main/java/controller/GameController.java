@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import ui.Assets;
+import ui.Constants;
+import ui.Level;
 import utils.LevelsCreator;
 
 import java.util.ArrayList;
@@ -18,32 +20,38 @@ import java.util.Set;
 
 import java.net.URL;
 
+import bombermanfx.Main;
+
 public class GameController extends BorderPane {
 
     // Permet d'accèder à l'instance de GameController depuis
     // n'importe où dans le projet
     private static GameController instance;
 
+    private int nbJoueurs;
+    private int nbRobots;
+
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
     private Player player2;
     private Player player;
-    private ArrayList<Entity> staticEntities; // murs, blocs
-    private ArrayList<Entity> dynamicEntities; // bombes, explosions, ennemis, etc.
+
+    private Level level;
 
     private final Set<KeyCode> keysPressed = new HashSet<>();
 
     private AnimationTimer gameLoop;
 
-    public GameController() {instance = this;}
     public static GameController getInstance() {return instance; };
-    public ArrayList<Entity>  getStaticEntities() {return staticEntities;}
+    public Level getLevel() {return level;}
+
+    public GameController() {
+        instance = this;
+    }
 
     @FXML
     public void initialize() {
-
-
 
         // 1. Accès au GraphicsContext
         gc = canvas.getGraphicsContext2D();
@@ -52,16 +60,9 @@ public class GameController extends BorderPane {
         Assets.load();
 
         // 3. Créer les entités
-        player2 = new Player(400, 400);
-        player = new Player(500, 500);
-        //staticEntities = LevelCreator.getLevel1StaticEntities();
-        //dynamicEntities = LevelCreator.getLevel1DynamicEntities();
-        staticEntities = new ArrayList<>();
-        dynamicEntities = new ArrayList<>();
+        player = new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1);
 
-        dynamicEntities.add(player);
-        // Exemple : ajout d’un mur
-        staticEntities.add(new Wall(48, 48));
+        level = LevelsCreator.getCurrentLevel();
 
         // 4. Gérer les entrées clavier
         canvas.setFocusTraversable(true);
@@ -78,7 +79,6 @@ public class GameController extends BorderPane {
                 onKeyReleased(event);
             }
         });
-
 
         // 5. Lancer la boucle de jeu
         gameLoop = new AnimationTimer() {
@@ -127,7 +127,7 @@ public class GameController extends BorderPane {
         player.update();
 
         // Plus tard : update bombes, ennemis, collisions...
-        for (Entity entity : dynamicEntities) {
+        for (Entity entity : level.getDynamicEntities()) {
             entity.update();
         }
     }
@@ -140,12 +140,12 @@ public class GameController extends BorderPane {
         gc.drawImage(Assets.background, 0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Dessiner les entités statiques (murs, sol)
-        for (Entity entity : staticEntities) {
+        for (Entity entity : level.getStaticEntities()) {
             entity.render(gc);
         }
 
         // Dessiner les entités dynamiques
-        for (Entity entity : dynamicEntities) {
+        for (Entity entity : level.getDynamicEntities()) {
             entity.render(gc);
         }
 

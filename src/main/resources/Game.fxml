@@ -6,11 +6,12 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.canvas.Canvas?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GameController"
-            prefHeight="400.0" prefWidth="600.0">
-
-    <Canvas fx:id="canvas" width="1500" height="1200"/>
-
-</AnchorPane>
+            prefHeight="1500" prefWidth="1800" style="-fx-background-color: #ADD8E6;">
+    <center>
+        <Canvas fx:id="canvas" width="705" height="610"/>
+    </center>
+</BorderPane>

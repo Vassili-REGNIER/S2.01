@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import bombermanfx.Main;
+import utils.LevelsCreator;
 
 /**
  * Contrôleur pour la scène d'accueil de BombermanFX.
@@ -30,13 +31,44 @@ public class AccueilController {
      *
      * @param event L'événement déclenché par le clic.
      */
-    public void onJouerClicked(ActionEvent event) {
-        // Fermer la fenêtre d'accueil
+    @FXML
+    public void lancerJeuMode1(ActionEvent event) {
+        LevelsCreator.setCurrentLevel(1);
+
+        // Ferme la fenêtre
         Stage stageAccueil = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stageAccueil.close();
         MusicPlayer.stopMusic();
 
-        // Lancer la scène principale via Main
+        lancerJeuMode(event);
+    }
+
+    @FXML
+    public void lancerJeuMode2(ActionEvent event) {
+        LevelsCreator.setCurrentLevel(2);
+
+        // Ferme la fenêtre
+        Stage stageAccueil = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stageAccueil.close();
+        MusicPlayer.stopMusic();
+
+        lancerJeuMode(event);
+    }
+
+    @FXML
+    public void lancerJeuMode3(ActionEvent event) {
+        LevelsCreator.setCurrentLevel(3);
+
+        // Ferme la fenêtre
+        Stage stageAccueil = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stageAccueil.close();
+        MusicPlayer.stopMusic();
+
+        lancerJeuMode(event);
+    }
+
+    @FXML
+    public void lancerJeuMode(ActionEvent event) {
         try {
             Main jeu = new Main();
             Stage stageJeu = new Stage();
@@ -71,5 +103,6 @@ public class AccueilController {
         if (soundIcon != null) {
             soundIcon.setImage(new Image(getClass().getResource("/images/home/sound-on.png").toExternalForm()));
         }
+        LevelsCreator.initLevels();
     }
 }

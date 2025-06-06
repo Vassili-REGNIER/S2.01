@@ -1,12 +1,24 @@
 package entities;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import ui.Assets;
 import ui.Constants;
 
 public class Wall extends Entity {
 
+    private Image currentImage;
+    boolean breakable;
+
+    public Wall(double x, double y, boolean breakable) {
+        this.breakable = breakable;
+        this.x = x;
+        this.y = y;
+        this.size = Constants.TILE_SIZE;
+    }
+
     public Wall(double x, double y) {
+        this.breakable = false;
         this.x = x;
         this.y = y;
         this.size = Constants.TILE_SIZE;
@@ -19,6 +31,15 @@ public class Wall extends Entity {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.drawImage(Assets.wallSprite, x, y, size, size);
+
+        if (breakable) {
+            currentImage = Assets.wallBreakable;
+        }
+
+        else {
+            currentImage = Assets.wallSprite;
+        }
+
+        gc.drawImage(currentImage, x, y, size, size);
     }
 }

@@ -4,6 +4,7 @@ import controller.GameController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ui.Assets;
+import ui.CollisionCalculator;
 import ui.Constants;
 
 import static ui.CollisionCalculator.isColliding;
@@ -11,14 +12,16 @@ import static ui.CollisionCalculator.isColliding;
 public class Player extends Entity {
 
     private double speed = (double) Constants.TILE_SIZE / 5;      // vitesse de déplacement en pixels par frame
-
+    private int currentDeplacementCounter = 0;
+    private int currentDeplacementDirection;
     private boolean movingUp, movingDown, movingLeft, movingRight;
     private Image currentImage;
+    private final double size;
 
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
-        this.size = Constants.TILE_SIZE;
+        this.size = Constants.TILE_SIZE * 0.8;
         this.currentImage = Assets.player1Down;  // direction initiale (exemple)
     }
 
@@ -30,31 +33,60 @@ public class Player extends Entity {
 
     @Override
     public void update() {
-        double dx = 0, dy = 0;
-        if (movingUp) {
-            dy -= speed;
-        }
-        if (movingDown) {
-            dy += speed;
-        }
-        if (movingLeft) {
-            dx -= speed;
-        }
-        if (movingRight) {
-            dx += speed;
-        }
 
-        // Déplace le joueur
-        x += dx;
-        y += dy;
+        // Si le joueur ne bouge plus permet de lancer un déplacement
+        if (currentDeplacementCounter <= 0) {
+            double dx = 0, dy = 0;
+            if (movingUp) {
+                dy -= Constants.TILE_SIZE;
+                currentDeplacementCounter = 5;
+                currentDeplacementDirection = 1; // Haut
+            }
+            else if (movingDown) {
+                if (isColliding(this, new Player(x, y + Constants.TILE_SIZE))) {
+                    return;
+                }
+                dy += Constants.TILE_SIZE;
+                currentDeplacementCounter = 5;
+                currentDeplacementDirection = 2; // Bas
+            }
+            else if (movingLeft) {
+                if (isColliding(this, new Player(x - Constants.TILE_SIZE, y))) {
+                    return;
+                }
+                dx -= Constants.TILE_SIZE;
+                currentDeplacementCounter = 5;
+                currentDeplacementDirection = 3; // Gauche
+            }
+            else if (movingRight) {
+                if (isColliding(this, new Player(x - Constants.TILE_SIZE, y))) {
+                    return;
+                }
+                dx += Constants.TILE_SIZE;
+                currentDeplacementCounter = 5;
+                currentDeplacementDirection = 4; // Bas
+            }
+            x = x + dx;
+            y = y + dy;
+            for (Entity entity : GameController.getInstance().getLevel().getStaticEntities()) {
+                if (CollisionCalculator.isColliding(this, entity)) {
+                    currentDeplacementCounter = 0;
+                }
+            }
+            x = x - dx;
+            y = y - dy;
 
-        // vérifier collision avec chaque mur
-        for (Entity entity : GameController.getInstance().getStaticEntities()) {
-            if (isColliding(this, entity)) {
-                // Annule le déplacement si il y a une colision
-                x -= dx;
-                y -= dy;
-                return;
+
+        } else {
+            currentDeplacementCounter--;
+            if (currentDeplacementDirection == 1) {
+                y -= speed;
+            } else if (currentDeplacementDirection == 2) {
+                y += speed;
+            } else if (currentDeplacementDirection == 3) {
+                x -= speed;
+            } else if (currentDeplacementDirection == 4) {
+                x += speed;
             }
         }
     }
@@ -73,7 +105,11 @@ public class Player extends Entity {
          else if (movingDown) {
              currentImage = Assets.player1Down;
          }
-         gc.drawImage(currentImage, x, y);
-    }
+         gc.drawImage(currentImage, x, y, size, size);
 
+         double radius = 2;
+         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+         gc.fillOval(x - radius + size, y - radius + size, radius * 2, radius * 2);
+
+    }
 }

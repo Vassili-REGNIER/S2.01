@@ -21,13 +21,13 @@
     <Label text="Choisir mode de jeu :" styleClass="label"/>
 
     <!-- Bouton pour démarrer -->
-    <Button text="Jouer" onAction="#onJouerClicked" styleClass="button"/>
+    <Button text="Solo vs Machine" onAction="#lancerJeuMode1" styleClass="button"/>
 
     <!-- Bouton pour mode multijoueur 1V1 -->
-    <Button text="Multiplayer" styleClass="button"/>
+    <Button text="Multijoueur" onAction="#lancerJeuMode2" styleClass="button"/>
 
     <!-- Bouton pour mode contre machine 1VM -->
-    <Button text="Contre Machine" styleClass="button"/>
+    <Button text="2 Joueurs vs Machine" onAction="#lancerJeuMode3" styleClass="button"/>
 
     <!-- Conteneur pour bouton toggle son -->
     <HBox alignment="CENTER_RIGHT">
