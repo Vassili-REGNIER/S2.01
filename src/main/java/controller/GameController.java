@@ -54,10 +54,12 @@ public class GameController extends BorderPane {
         // 3. Créer les entités
         player2 = new Player(400, 400);
         player = new Player(500, 500);
-        staticEntities = LevelCreator.getLevel1StaticEntities();
-        dynamicEntities = LevelCreator.getLevel1DynamicEntities();
+        //staticEntities = LevelCreator.getLevel1StaticEntities();
+        //dynamicEntities = LevelCreator.getLevel1DynamicEntities();
+        staticEntities = new ArrayList<>();
+        dynamicEntities = new ArrayList<>();
 
-
+        dynamicEntities.add(player);
         // Exemple : ajout d’un mur
         staticEntities.add(new Wall(48, 48));
 
