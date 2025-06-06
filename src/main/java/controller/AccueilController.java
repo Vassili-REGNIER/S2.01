@@ -68,8 +68,8 @@ public class AccueilController {
      */
     @FXML
     public void initialize() {
-//        if (soundIcon != null) {
-//            soundIcon.setImage(new Image(getClass().getResource("/images/home/sound-on.png").toExternalForm()));
-//        }
+        if (soundIcon != null) {
+            soundIcon.setImage(new Image(getClass().getResource("/images/home/sound-on.png").toExternalForm()));
+        }
     }
 }

@@ -34,9 +34,9 @@
         <Button fx:id="soundToggleButton" onAction="#onToggleSound" style="-fx-background-color: transparent;">
             <graphic>
                 <ImageView fx:id="soundIcon" fitHeight="40" fitWidth="40">
-<!--                    <image>-->
-<!--                        <Image url="@images/home/sound-on.png"/>-->
-<!--                    </image>-->
+                    <image>
+                       <Image url="@images/home/sound-on.png"/>
+                    </image>
                 </ImageView>
             </graphic>
         </Button>
