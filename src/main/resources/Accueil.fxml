@@ -13,21 +13,24 @@
     <!-- Logo Bomberman -->
     <ImageView fx:id="logoImage" id="logoImage" fitWidth="800" preserveRatio="true">
         <image>
-            <Image url="@images/home/logo.png"/>
+            <Image url="@images/home/logo2.png"/>
         </image>
     </ImageView>
 
-    <!-- Titre -->
-    <Label text="Choisir mode de jeu :" styleClass="label"/>
+    <!-- Menu Principal -->
+    <VBox fx:id="mainMenu" alignment="CENTER" spacing="10">
+        <Button text="Solo" onAction="#onJouerClicked" styleClass="button"/>
+        <Button text="Multijoueur" onAction="#onMultiplayerClicked" styleClass="button"/>
+       <!-- <Button text="Contre Machine" styleClass="button"/> -->
+        <Button text="Quitter" onAction="#onQuitterClicked" styleClass="button"/>
+    </VBox>
 
-    <!-- Bouton pour démarrer -->
-    <Button text="Jouer" onAction="#onJouerClicked" styleClass="button"/>
-
-    <!-- Bouton pour mode multijoueur 1V1 -->
-    <Button text="Multiplayer" styleClass="button"/>
-
-    <!-- Bouton pour mode contre machine 1VM -->
-    <Button text="Contre Machine" styleClass="button"/>
+    <!-- Sous-menu Multijoueur -->
+    <VBox fx:id="multiplayerMenu" alignment="CENTER" spacing="10" visible="false" managed="false">
+        <Button text="Contre un joueur" onAction="#on1v1Clicked" styleClass="button"/>
+        <Button text="Contre machine" onAction="#onVsAIInMultiplayerClicked" styleClass="button"/>
+        <Button text="Retour" onAction="#onBackToMainMenu" styleClass="button"/>
+    </VBox>
 
     <!-- Conteneur pour bouton toggle son -->
     <HBox alignment="CENTER_RIGHT">
