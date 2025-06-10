@@ -10,11 +10,20 @@ public class Wall extends Entity {
     private Image currentImage;
     boolean breakable;
 
+    public boolean isBreakable() {
+        return breakable;
+    }
+
     public Wall(double x, double y, boolean breakable) {
         this.breakable = breakable;
         this.x = x;
         this.y = y;
         this.size = Constants.TILE_SIZE;
+        if (breakable) {
+            currentImage = Assets.wallBreakable;
+        } else {
+            currentImage = Assets.wallSprite;
+        }
     }
 
     public Wall(double x, double y) {

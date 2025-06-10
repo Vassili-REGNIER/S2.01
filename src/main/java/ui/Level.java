@@ -1,6 +1,7 @@
 package ui;
 
 import entities.Entity;
+import entities.Player;
 
 import java.util.ArrayList;
 
@@ -8,15 +9,33 @@ public class Level {
     private int level;
     private ArrayList<Entity> staticEntities; // murs, blocs
     private ArrayList<Entity> dynamicEntities; // bombes, explosions, ennemis, etc.
+    private ArrayList<Player> players;
 
     public Level(int level, ArrayList<Entity> staticEntities, ArrayList<Entity> dynamicEntities) {
         this.level = level;
         this.staticEntities = staticEntities;
         this.dynamicEntities = dynamicEntities;
+        this.players = new ArrayList<>();
     }
 
     public Level(int level) {
         this.level = level;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public int getNbJoueur() {
+        return players.size();
+    }
+
+    public void addPlayer(Player player) {
+        this.players.add(player);
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
     }
 
     public int getLevel() {

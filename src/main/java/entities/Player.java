@@ -73,6 +73,12 @@ public class Player extends Entity {
                     currentDeplacementCounter = 0;
                 }
             }
+            for (Entity entity : GameController.getInstance().getLevel().getDynamicEntities()) {
+                if (CollisionCalculator.isColliding(this, entity)) {
+                    currentDeplacementCounter = 0;
+                }
+            }
+
             x = x - dx;
             y = y - dy;
 
@@ -91,6 +97,13 @@ public class Player extends Entity {
         }
     }
 
+    public void placeBomb() {
+        double gap = Constants.TILE_SIZE * 0.1;
+        Bomb bomb = new Bomb(x - gap, y - gap);
+        GameController.getInstance().getLevel().getDynamicEntities().add(bomb);
+        System.out.println("Bombe posée à : x=" + bomb.getX() + ", y=" + bomb.getY());
+    }
+
     @Override
     public void render(GraphicsContext gc) {
          if (movingUp) {
@@ -107,9 +120,12 @@ public class Player extends Entity {
          }
          gc.drawImage(currentImage, x, y, size, size);
 
-         double radius = 2;
-         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-         gc.fillOval(x - radius + size, y - radius + size, radius * 2, radius * 2);
+//         Affiche la hitbox
+//         double radius = 2;
+//         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+//         gc.fillOval(x - radius + size, y - radius + size, radius * 2, radius * 2);
 
     }
+
+
 }

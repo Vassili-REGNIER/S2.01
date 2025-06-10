@@ -1,8 +1,11 @@
 package utils;
 
+import entities.Bomb;
 import entities.Entity;
+import entities.Player;
 import entities.Wall;
 import ui.CollisionCalculator;
+import ui.Constants;
 import ui.Level;
 
 import java.util.ArrayList;
@@ -37,26 +40,22 @@ public class LevelsCreator {
     public static void initLevels() {
         levels = new ArrayList<>();
 
-        ArrayList<Entity> staticEntitiesL1 = new ArrayList<>();  // murs, blocs
-        ArrayList<Entity> dynamicEntitiesL1 = new ArrayList<>(); // bombes, explosions, ennemis, etc.
 
-        staticEntitiesL1.add(new Wall(200, 200));
+        Level level1 = generateRandomLevel(1);
+        level1.addPlayer(new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1));
 
-        Level level1 = new Level(1, staticEntitiesL1, dynamicEntitiesL1);
+        Level level2 = generateRandomLevel(2);
+        level2.addPlayer(new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1));
+        level2.addPlayer(new Player(Constants.TILE_SIZE * 13.1, Constants.TILE_SIZE * 11.1));
 
-        ArrayList<Entity> staticEntitiesL2 = new ArrayList<>();  // murs, blocs
-        ArrayList<Entity> dynamicEntitiesL2 = new ArrayList<>(); // bombes, explosions, ennemis, etc.
-
-        staticEntitiesL2.add(new Wall(0, 0));
-        staticEntitiesL2.add(new Wall(200, 200));
-
-        Level level2 = new Level(2, staticEntitiesL2, dynamicEntitiesL2);
-
+        Level level3 = generateRandomLevel(3);
+        level3.addPlayer(new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1));
+        level3.addPlayer(new Player(Constants.TILE_SIZE * 13.1, Constants.TILE_SIZE * 11.1));
 
 
         levels.add(level1);
         levels.add(level2);
-        levels.add(getRandomLevel(3));
+        levels.add(level3);
 
         currentLevel = level1;
 
@@ -96,7 +95,7 @@ public class LevelsCreator {
         return staticEntities;
     };
 
-    public static Level getRandomLevel (int levelNumber) {
+    public static Level generateRandomLevel(int levelNumber) {
         ArrayList<Entity> staticEntities = basicGrid();
         ArrayList<Entity> dynamicEntities = new ArrayList<>();
 
@@ -141,8 +140,7 @@ public class LevelsCreator {
                 System.out.println("Impossible de placer un mur sans collision après " + triesMax + " essais");
             }
         }
-        Level level = new Level(levelNumber, staticEntities, dynamicEntities);
-        return level;
+        return new Level(levelNumber, staticEntities, dynamicEntities);
     }
 }
 

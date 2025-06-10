@@ -13,6 +13,11 @@ public class Assets {
     public static Image wallBreakable;
     public static Image bombSprite;
     public static Image explosionSprite;
+    public static Image bombe1;
+    public static Image bombe2;
+    public static Image bombe3;
+    public static Image bombe4;
+
 
     public static void load() {
         try {
@@ -24,8 +29,11 @@ public class Assets {
             player1Right = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Right.png")).toExternalForm());
             player1Left = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Left.png")).toExternalForm());
 
-            //bombSprite = new Image(Assets.class.getResource("/images/background.png").toExternalForm());
-            //explosionSprite = new Image(Assets.class.getResource("/images/background.png").toExternalForm());
+            bombe1 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe1.png")).toExternalForm());
+            bombe2 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe2.png")).toExternalForm());
+            bombe3 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe3.png")).toExternalForm());
+            bombe4 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe4.png")).toExternalForm());
+
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des images : " + e.getMessage());
             e.printStackTrace();

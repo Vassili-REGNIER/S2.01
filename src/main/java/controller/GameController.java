@@ -18,24 +18,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import java.net.URL;
-
-import bombermanfx.Main;
-
 public class GameController extends BorderPane {
 
     // Permet d'accèder à l'instance de GameController depuis
     // n'importe où dans le projet
     private static GameController instance;
 
-    private int nbJoueurs;
-    private int nbRobots;
-
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
     private Player player2;
-    private Player player;
+    private Player player1;
 
     private Level level;
 
@@ -59,10 +52,15 @@ public class GameController extends BorderPane {
         // 2. Charger les sprites
         Assets.load();
 
-        // 3. Créer les entités
-        player = new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1);
-
         level = LevelsCreator.getCurrentLevel();
+        // 3. Créer les entités
+        if (level.getNbJoueur() == 1) {
+            player1 = level.getPlayers().getFirst();
+        }
+        else if (level.getNbJoueur() == 2) {
+            player1 = level.getPlayers().get(0);
+            player2 = level.getPlayers().get(1);
+        }
 
         // 4. Gérer les entrées clavier
         canvas.setFocusTraversable(true);
@@ -109,25 +107,46 @@ public class GameController extends BorderPane {
     private void onKeyPressed(KeyEvent event) {
         keysPressed.add(event.getCode());
         updatePlayerMovement();
+        updateBombePlacement();
     }
 
     private void onKeyReleased(KeyEvent event) {
         keysPressed.remove(event.getCode());
         updatePlayerMovement();
+        updateBombePlacement();
     }
 
     private void updatePlayerMovement() {
-        player.setMovingUp(keysPressed.contains(KeyCode.UP) || keysPressed.contains(KeyCode.Z));
-        player.setMovingDown(keysPressed.contains(KeyCode.DOWN) || keysPressed.contains(KeyCode.S));
-        player.setMovingLeft(keysPressed.contains(KeyCode.LEFT) || keysPressed.contains(KeyCode.Q));
-        player.setMovingRight(keysPressed.contains(KeyCode.RIGHT) || keysPressed.contains(KeyCode.D));
+        player1.setMovingUp(keysPressed.contains(KeyCode.Z));
+        player1.setMovingDown(keysPressed.contains(KeyCode.S));
+        player1.setMovingLeft(keysPressed.contains(KeyCode.Q));
+        player1.setMovingRight(keysPressed.contains(KeyCode.D));
+
+        if (player2 != null) {
+            player2.setMovingUp(keysPressed.contains(KeyCode.UP));
+            player2.setMovingDown(keysPressed.contains(KeyCode.DOWN));
+            player2.setMovingLeft(keysPressed.contains(KeyCode.LEFT));
+            player2.setMovingRight(keysPressed.contains(KeyCode.RIGHT));
+        }
+    }
+
+    private void updateBombePlacement() {
+        if (keysPressed.contains(KeyCode.E)) {
+            player1.placeBomb();
+        }
+
+        if (player2 != null && keysPressed.contains(KeyCode.NUMPAD0)) {
+            player2.placeBomb();
+        }
     }
 
     private void update() {
-        player.update();
+        player1.update();
+        if (player2 != null) {
+            player2.update();
+        }
 
-        // Plus tard : update bombes, ennemis, collisions...
-        for (Entity entity : level.getDynamicEntities()) {
+        for (Entity entity : new ArrayList<Entity>(level.getDynamicEntities())) {
             entity.update();
         }
     }
@@ -150,6 +169,9 @@ public class GameController extends BorderPane {
         }
 
         // Dessiner le joueur
-        player.render(gc);
+        player1.render(gc);
+        if (player2 != null) {
+            player2.render(gc);
+        }
     }
 }
