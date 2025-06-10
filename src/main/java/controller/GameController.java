@@ -91,7 +91,6 @@ public class GameController extends BorderPane {
 
                 long elapsedNanos = now - lastUpdate;
                 long interval = 50_000_000; // 50 ms = 20 FPS (1000 ms / 50 ms = 20)
-
                 if (elapsedNanos >= interval) {
                     update();
                     render();
@@ -166,6 +165,11 @@ public class GameController extends BorderPane {
         // Dessiner les entités dynamiques
         for (Entity entity : level.getDynamicEntities()) {
             entity.render(gc);
+        }
+
+        System.out.println("Entités dynamiques :");
+        for (Entity e : level.getDynamicEntities()) {
+            System.out.println(e.getClass().getSimpleName() + " à " + e.getX() + ", " + e.getY());
         }
 
         // Dessiner le joueur

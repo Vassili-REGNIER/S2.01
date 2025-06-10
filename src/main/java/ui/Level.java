@@ -1,6 +1,7 @@
 package ui;
 
 import entities.Entity;
+import entities.Monster;
 import entities.Player;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class Level {
     public void addPlayer(Player player) {
         this.players.add(player);
     }
+
+    public void addMonster(Monster monster) { this.dynamicEntities.add(monster);}
 
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;

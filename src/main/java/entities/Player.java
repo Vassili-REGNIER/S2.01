@@ -14,15 +14,25 @@ public class Player extends Entity {
     private double speed = (double) Constants.TILE_SIZE / 5;      // vitesse de déplacement en pixels par frame
     private int currentDeplacementCounter = 0;
     private int currentDeplacementDirection;
-    private boolean movingUp, movingDown, movingLeft, movingRight;
+    private boolean movingUp, movingDown, movingLeft, movingRight, isBomb;
     private Image currentImage;
     private final double size;
+    private int numberPlayer;
 
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
         this.size = Constants.TILE_SIZE * 0.8;
-        this.currentImage = Assets.player1Down;  // direction initiale (exemple)
+        this.currentImage = Assets.player1Down;
+        this.numberPlayer = 1;
+    }
+
+    public Player(double x, double y, int numberPlayer) {
+        this.x = x;
+        this.y = y;
+        this.size = Constants.TILE_SIZE * 0.8;
+        this.currentImage = Assets.player1Down;
+        this.numberPlayer = numberPlayer;
     }
 
     // Méthodes pour gérer les entrées clavier (appelées depuis le contrôleur)
@@ -30,6 +40,20 @@ public class Player extends Entity {
     public void setMovingDown(boolean moving) { movingDown = moving; }
     public void setMovingLeft(boolean moving) { movingLeft = moving; }
     public void setMovingRight(boolean moving) { movingRight = moving; }
+    public void setBombBool(boolean isBombSet) { isBomb = isBombSet; }
+
+    public double getX() {
+        return super.getX();
+    }
+
+    public double getY() {
+        return super.getY();
+    }
+
+    public double getSize() {
+        return super.getSize();
+    }
+
 
     @Override
     public void update() {
@@ -106,18 +130,31 @@ public class Player extends Entity {
 
     @Override
     public void render(GraphicsContext gc) {
-         if (movingUp) {
+         if (movingUp && numberPlayer == 1) {
              currentImage = Assets.player1Up;
          }
-         else if (movingRight) {
+         else if (movingRight  && numberPlayer == 1) {
              currentImage = Assets.player1Right;
          }
-         else if (movingLeft) {
+         else if (movingLeft && numberPlayer == 1) {
              currentImage = Assets.player1Left;
          }
-         else if (movingDown) {
+         else if (movingDown && numberPlayer == 1) {
              currentImage = Assets.player1Down;
          }
+         else if (movingDown  && numberPlayer == 2) {
+             currentImage = Assets.player2Down;
+         }
+         else if (movingUp  && numberPlayer == 2) {
+             currentImage = Assets.player2Up;
+         }
+         else if (movingLeft  && numberPlayer == 2) {
+             currentImage = Assets.player2Left;
+         }
+         else if (movingRight  && numberPlayer == 2) {
+             currentImage = Assets.player2Right;
+         }
+
          gc.drawImage(currentImage, x, y, size, size);
 
 //         Affiche la hitbox

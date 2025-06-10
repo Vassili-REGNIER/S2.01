@@ -6,9 +6,9 @@ import java.util.Objects;
 
 public class Assets {
 
-    public static Image player1Up, player1Right, player1Left;
+    public static Image player1Up, player1Right, player1Left, player1Down ;
+    public static Image player2Up, player2Right, player2Left, player2Down;
     public static Image background;
-    public static Image player1Down;
     public static Image wallSprite;
     public static Image wallBreakable;
     public static Image bombSprite;
@@ -17,6 +17,7 @@ public class Assets {
     public static Image bombe2;
     public static Image bombe3;
     public static Image bombe4;
+    public static Image monsterSprite;
 
 
     public static void load() {
@@ -28,6 +29,14 @@ public class Assets {
             player1Up = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Up.png")).toExternalForm());
             player1Right = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Right.png")).toExternalForm());
             player1Left = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player1Left.png")).toExternalForm());
+
+            monsterSprite = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/monster.png")).toExternalForm());
+
+            player2Down = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player2Down.png")).toExternalForm());
+            player2Up = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player2Up.png")).toExternalForm());
+            player2Right = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player2Right.png")).toExternalForm());
+            player2Left = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/player2Left.png")).toExternalForm());
+
 
             bombe1 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe1.png")).toExternalForm());
             bombe2 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe2.png")).toExternalForm());
