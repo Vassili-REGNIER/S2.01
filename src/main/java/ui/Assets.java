@@ -11,8 +11,7 @@ public class Assets {
     public static Image player1Down;
     public static Image wallSprite;
     public static Image wallBreakable;
-    public static Image bombSprite;
-    public static Image explosionSprite;
+    public static Image explosion;
     public static Image bombe1;
     public static Image bombe2;
     public static Image bombe3;
@@ -34,6 +33,7 @@ public class Assets {
             bombe3 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe3.png")).toExternalForm());
             bombe4 = new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/bombe4.png")).toExternalForm());
 
+            explosion =  new Image(Objects.requireNonNull(Assets.class.getResource("/images/game/explosion1.png")).toExternalForm());
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des images : " + e.getMessage());
             e.printStackTrace();

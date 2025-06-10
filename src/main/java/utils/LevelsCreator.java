@@ -124,7 +124,7 @@ public class LevelsCreator {
                 }
                 // Vérifie collisions avec dynamicEntities (murs déjà ajoutés)
                 if (placeLibre) {
-                    for (Entity e : dynamicEntities) {
+                    for (Entity e : staticEntities) {
                         if (CollisionCalculator.isColliding(newWall, e)) {
                             placeLibre = false;
                             break;
@@ -135,7 +135,7 @@ public class LevelsCreator {
             }
 
             if (placeLibre) {
-                dynamicEntities.add(new Wall(TILE_SIZE * x, TILE_SIZE * y, true));
+                staticEntities.add(new Wall(TILE_SIZE * x, TILE_SIZE * y, true));
             } else {
                 System.out.println("Impossible de placer un mur sans collision après " + triesMax + " essais");
             }

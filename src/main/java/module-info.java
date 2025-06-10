@@ -2,7 +2,8 @@ module bombermanfx {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
-    requires javafx.media;    // <--- Ajouté pour la lecture audio
+    requires javafx.media;
+    requires com.fasterxml.jackson.annotation;    // <--- Ajouté pour la lecture audio
 
     opens ui to javafx.fxml;            // pour charger Game.fxml
     opens controller to javafx.fxml;    // pour que le contrôleur soit accessible au FXML

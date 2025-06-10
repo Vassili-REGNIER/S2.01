@@ -90,7 +90,7 @@ public class GameController extends BorderPane {
                 }
 
                 long elapsedNanos = now - lastUpdate;
-                long interval = 50_000_000; // 50 ms = 20 FPS (1000 ms / 50 ms = 20)
+                long interval = 40_000_000; //40_000_000 = 50 ms = 20 FPS (1000 ms / 50 ms = 20)
 
                 if (elapsedNanos >= interval) {
                     update();

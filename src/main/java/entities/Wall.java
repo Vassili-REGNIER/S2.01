@@ -1,5 +1,6 @@
 package entities;
 
+import controller.GameController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ui.Assets;
@@ -15,10 +16,8 @@ public class Wall extends Entity {
     }
 
     public Wall(double x, double y, boolean breakable) {
+        super(x, y, Constants.TILE_SIZE);
         this.breakable = breakable;
-        this.x = x;
-        this.y = y;
-        this.size = Constants.TILE_SIZE;
         if (breakable) {
             currentImage = Assets.wallBreakable;
         } else {
@@ -27,10 +26,12 @@ public class Wall extends Entity {
     }
 
     public Wall(double x, double y) {
+        super(x, y, Constants.TILE_SIZE);
         this.breakable = false;
-        this.x = x;
-        this.y = y;
-        this.size = Constants.TILE_SIZE;
+    }
+
+    public void breakWall() {
+        GameController.getInstance().getLevel().getStaticEntities().remove(this);
     }
 
     @Override

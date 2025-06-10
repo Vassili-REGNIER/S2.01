@@ -16,12 +16,10 @@ public class Player extends Entity {
     private int currentDeplacementDirection;
     private boolean movingUp, movingDown, movingLeft, movingRight;
     private Image currentImage;
-    private final double size;
+    private int nbLives = 5;
 
     public Player(double x, double y) {
-        this.x = x;
-        this.y = y;
-        this.size = Constants.TILE_SIZE * 0.8;
+        super(x, y, 0.8 * Constants.TILE_SIZE);
         this.currentImage = Assets.player1Down;  // direction initiale (exemple)
     }
 
@@ -97,6 +95,10 @@ public class Player extends Entity {
         }
     }
 
+    public void removeLife() {
+        this.nbLives--;
+    }
+
     public void placeBomb() {
         double gap = Constants.TILE_SIZE * 0.1;
         Bomb bomb = new Bomb(x - gap, y - gap);
@@ -128,4 +130,11 @@ public class Player extends Entity {
     }
 
 
+    public int getNbLives() {
+        return nbLives;
+    }
+
+    public void setNbLives(int nbLives) {
+        this.nbLives = nbLives;
+    }
 }

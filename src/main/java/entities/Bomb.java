@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import ui.Assets;
 import ui.Constants;
 
-import java.util.ArrayList;
 
 public class Bomb extends Entity {
     private Image currentImage;
@@ -14,13 +13,12 @@ public class Bomb extends Entity {
     private int state = 0; // Étapes : 0 → image1, 1 → image2, 2 → image3, 3 → fin
 
     public Bomb(double x, double y) {
-        this.x = x;
-        this.y = y;
-        this.size = Constants.TILE_SIZE;
+        super(x, y, Constants.TILE_SIZE);
+
+        this.x = (x / Constants.TILE_SIZE) * Constants.TILE_SIZE;
+        this.y = (y / Constants.TILE_SIZE) * Constants.TILE_SIZE;
         this.startTime = System.currentTimeMillis();
         this.currentImage = Assets.bombe1;
-
-
     }
 
     @Override
@@ -41,8 +39,14 @@ public class Bomb extends Entity {
 
         } else if (state == 3 && elapsed >= 2000) {
             state = 4;
-            GameController.getInstance().getLevel().getDynamicEntities().remove(this);
+            this.explode();
         }
+    }
+
+    private void explode() {
+        GameController.getInstance().getLevel().getDynamicEntities().remove(this);
+        Explosion explosion = new Explosion(x, y);
+        GameController.getInstance().getLevel().getDynamicEntities().add(explosion);
     }
 
     @Override
