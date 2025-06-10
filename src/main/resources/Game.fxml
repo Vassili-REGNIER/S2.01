@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-
-
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GameController"
             prefHeight="1500" prefWidth="1800" style="-fx-background-color: #ADD8E6;">
+
+    <top>
+        <StackPane>
+            <ImageView fitHeight="100" preserveRatio="true">
+                <image>
+                    <Image url="@images/gameBoard/barreScore.jpg"/>
+                </image>
+            </ImageView>
+            <Label text="Score : 1000"
+                   style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </StackPane>
+    </top>
+
     <center>
         <Canvas fx:id="canvas" width="705" height="610"/>
     </center>
+
 </BorderPane>
