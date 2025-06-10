@@ -15,8 +15,8 @@ public class Bomb extends Entity {
     public Bomb(double x, double y) {
         super(x, y, Constants.TILE_SIZE);
 
-        this.x = (x / Constants.TILE_SIZE) * Constants.TILE_SIZE;
-        this.y = (y / Constants.TILE_SIZE) * Constants.TILE_SIZE;
+        this.x = (int) ((x+10) / Constants.TILE_SIZE) * Constants.TILE_SIZE;
+        this.y = (int) ((y+10) / Constants.TILE_SIZE) * Constants.TILE_SIZE;
         this.startTime = System.currentTimeMillis();
         this.currentImage = Assets.bombe1;
     }
