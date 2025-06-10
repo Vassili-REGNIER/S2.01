@@ -19,6 +19,9 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Super Bomberman FX");
         primaryStage.show();
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("Appuyez sur ÉCHAP pour quitter le plein écran");
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
