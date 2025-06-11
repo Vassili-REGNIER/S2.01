@@ -24,9 +24,6 @@ public class Accueil extends Application {
 
         // Création de la scène avec les dimensions spécifiées
         scene = new Scene(root, 1200, 800);
-
-        // Ne plus gérer le bouton thème ici, c'est fait dans le controller
-
         // Configuration de la fenêtre principale
         stage.setTitle("BombermanFX - Accueil");
         stage.setScene(scene);

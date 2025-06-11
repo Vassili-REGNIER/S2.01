@@ -5,13 +5,18 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import ui.Assets;
 import ui.Constants;
@@ -20,6 +25,8 @@ import utils.LevelsCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -116,28 +123,28 @@ public class GameController extends BorderPane {
 
         startTimer();
         // 5. Lancer la boucle de jeu
-        gameLoop = new AnimationTimer() {
-            private long lastUpdate = 0;
+        gameLoop = createGameLoop();
+        gameLoop.start();
 
+    }
+
+    private AnimationTimer createGameLoop() {
+        return new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
             public void handle(long now) {
                 if (lastUpdate == 0) {
                     lastUpdate = now;
                     return;
                 }
-
                 long elapsedNanos = now - lastUpdate;
-                long interval = 40_000_000; //40_000_000 = 50 ms = 20 FPS (1000 ms / 50 ms = 20)
-
-                if (elapsedNanos >= interval) {
+                if (elapsedNanos >= 40_000_000) {
                     update();
                     render();
                     lastUpdate = now;
                 }
             }
         };
-        gameLoop.start();
-
     }
 
     private void startTimer() {
@@ -256,6 +263,55 @@ public class GameController extends BorderPane {
                 winnerText = "Vous avez gagné !";
                 endGame();
             }
+        }
+    }
+
+    @FXML
+    private void onRestartClicked(ActionEvent event) {
+        if (gameLoop != null) gameLoop.stop();
+
+        // Nettoyage
+        keysPressed.clear();
+        gameEnded = false;
+        winnerText = "";
+
+
+        level.reset();
+        player1 = level.getPlayers().get(0);
+        player2 = level.getNbJoueur() == 2 ? level.getPlayers().get(1) : null;
+
+
+        if (player2 != null) {
+            vieJ2Label.textProperty().bind(player2.getNbLivesProperty().asString());
+            scoreJ2Label.textProperty().bind(player2.getScoreProperty().asString());
+        }
+
+        // Réinitialise le temps
+        timeElapsed.set(0);
+
+        canvas.requestFocus();
+        gameLoop = createGameLoop();
+        gameLoop.start();
+
+        System.out.println("restartClicked");
+    }
+
+    @FXML
+    private void onRetourAccueilClicked(ActionEvent event) {
+        try {
+            Stage gameStage = (Stage) canvas.getScene().getWindow();
+            gameStage.close();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
+            Parent root = loader.load();
+
+            Stage accueilStage = new Stage();
+            accueilStage.setTitle("Super Bomberman FX");
+            accueilStage.setScene(new Scene(root));
+            accueilStage.setFullScreen(true);
+            accueilStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

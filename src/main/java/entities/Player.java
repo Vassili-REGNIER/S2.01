@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import ui.Level;
 
 public class Player extends Entity {
 
@@ -19,16 +20,22 @@ public class Player extends Entity {
     private SimpleIntegerProperty nbLives, score;
     private int numberPlayer;
     private boolean canPlaceBomb = true, canLoseLife = true;
+    private final double initialX;
+    private final double initialY;
 
     public Player(double x, double y) {
         super(x, y, 0.8 * Constants.TILE_SIZE);
         this.numberPlayer = 1;
+        this.initialX = x;
+        this.initialY = y;
         nbLives = new SimpleIntegerProperty(5);
         score = new SimpleIntegerProperty(0);
     }
 
     public Player(double x, double y, int numberPlayer) {
         super(x, y, 0.8 * Constants.TILE_SIZE);
+        this.initialX = x;
+        this.initialY = y;
         this.numberPlayer = numberPlayer;
         nbLives = new SimpleIntegerProperty(5);
         score = new SimpleIntegerProperty(0);
@@ -114,13 +121,13 @@ public class Player extends Entity {
             }
         } else {
             if (currentDeplacementDirection == 1) {
-                currentImage = Assets.player1Up;
+                currentImage = Assets.player2Up;
             } else if (currentDeplacementDirection == 4) {
-                currentImage = Assets.player1Right;
+                currentImage = Assets.player2Right;
             } else if (currentDeplacementDirection == 3) {
-                currentImage = Assets.player1Left;
+                currentImage = Assets.player2Left;
             } else {
-                currentImage = Assets.player1Down;
+                currentImage = Assets.player2Down;
             }
         }
         gc.drawImage(currentImage, x, y, size, size);
@@ -143,5 +150,18 @@ public class Player extends Entity {
             cooldown.setCycleCount(1);
             cooldown.play();
         }
+    }
+
+    public void reset() {
+        this.x = initialX;
+        this.y = initialY;
+        this.currentDeplacementCounter = 0;
+        this.movingUp = false;
+        this.movingDown = false;
+        this.movingLeft = false;
+        this.movingRight = false;
+        this.currentImage = Assets.player1Down;
+        this.nbLives.setValue(5);
+        this.score.setValue(0);
     }
 }

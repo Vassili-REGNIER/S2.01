@@ -4,16 +4,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.Rectangle?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GameController" stylesheets="@style/style.css"
@@ -39,7 +35,6 @@
                     </image>
                 </ImageView>
 
-                <!-- Rectangle noir (temps) -->
                 <Label fx:id="timeLabel" text="0" prefHeight="40" textFill="black"/>
 
                 <ImageView fitWidth="40" fitHeight="40">
@@ -48,7 +43,6 @@
                     </image>
                 </ImageView>
 
-                <!-- Rectangle noir (score ou vie) -->
                 <Label fx:id="vieJ1Label" text="5" prefHeight="40" textFill="black"/>
 
                 <ImageView fitWidth="40" fitHeight="40">
@@ -57,8 +51,6 @@
                     </image>
                 </ImageView>
 
-
-                <!-- Rectangle noir (score ou vie) -->
                 <Label fx:id="vieJ2Label" text="5" prefHeight="40" textFill="black"/>
 
             </HBox>
@@ -68,7 +60,10 @@
     </center>
 
     <bottom>
-        <!--        <Button text="Retour" onAction="#goBackToMainMenu" styleClass="button"/>-->
+        <VBox fx:id="pauseMenu" alignment="CENTER" spacing="10" styleClass="button">
+            <Button text="Restart" onAction="#onRestartClicked" styleClass="button"/>
+            <Button text="Quitter" onAction="#onRetourAccueilClicked" styleClass="button"/>
+        </VBox>
     </bottom>
 
 

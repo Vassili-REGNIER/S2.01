@@ -132,6 +132,7 @@ public class AccueilController {
         // Ferme la fenêtre
         Stage stageAccueil = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stageAccueil.close();
+        stageAccueil.setFullScreen(true);
         MusicPlayer.stopMusic();
 
         lancerJeuMode(event);
@@ -142,6 +143,7 @@ public class AccueilController {
         try {
             Main jeu = new Main();
             Stage stageJeu = new Stage();
+            stageJeu.setFullScreen(true);
             jeu.start(stageJeu);
         } catch (Exception e) {
             e.printStackTrace();
