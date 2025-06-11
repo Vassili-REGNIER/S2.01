@@ -10,16 +10,13 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GameController"
-            prefHeight="1500" prefWidth="1800" style="-fx-background-color: #ADD8E6;">
+            prefHeight="1500" prefWidth="1800" style="-fx-background-color: #ADD8E6;" stylesheets="@style/style.css">
 
     <!-- Menu de pause positionné en haut à gauche -->
     <top>
-        <VBox fx:id="pauseMenu" alignment="TOP_LEFT" spacing="10"
-              style="-fx-padding: 10; -fx-background-color: rgba(0,0,0,0.5); -fx-background-radius: 5;">
-            <Button text="Restart" onAction="#onRestartClicked" styleClass="button"
-                    style="-fx-min-width: 80; -fx-pref-width: 80;"/>
-            <Button text="Quitter" onAction="#onQuitterClicked" styleClass="button"
-                    style="-fx-min-width: 80; -fx-pref-width: 80;"/>
+        <VBox fx:id="pauseMenu" alignment="TOP_LEFT" spacing="10" styleClass="button">
+            <Button text="Restart" onAction="#onRestartClicked" styleClass="button"/>
+            <Button text="Quitter" onAction="#onRetourAccueilClicked" styleClass="button"/>
         </VBox>
     </top>
 

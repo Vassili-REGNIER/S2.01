@@ -152,22 +152,18 @@ public class GameController extends BorderPane {
     @FXML
     private void onRestartClicked(ActionEvent event) {
         try {
-            // Masquer le menu de pause
             pauseMenu.setVisible(false);
             isPaused = false;
 
-            // Arrêter la boucle de jeu actuelle
             if (gameLoop != null) {
                 gameLoop.stop();
             }
 
-            // Vider les touches pressées
             keysPressed.clear();
 
-            // Recharger le niveau actuel
-            level = LevelsCreator.getCurrentLevel();
+            // Appelle la méthode reset au lieu de recharger complètement le niveau
+            level.reset();
 
-            // Réinitialiser les joueurs
             if (level.getNbJoueur() == 1) {
                 player1 = level.getPlayers().getFirst();
                 player2 = null;
@@ -176,10 +172,7 @@ public class GameController extends BorderPane {
                 player2 = level.getPlayers().get(1);
             }
 
-            // Redémarrer la boucle de jeu
             startGameLoop();
-
-            // Remettre le focus sur le canvas pour les contrôles clavier
             canvas.requestFocus();
 
         } catch (Exception e) {
@@ -188,42 +181,46 @@ public class GameController extends BorderPane {
         }
     }
 
+
+
     /**
      * Action exécutée lors du clic sur le bouton "Quitter".
      * Retourne à la page d'accueil de l'application.
      * @param event L'événement de clic sur le bouton
      */
+
     @FXML
-    private void onQuitterClicked(ActionEvent event) {
+    private void onRetourAccueilClicked(ActionEvent event) {
+        System.out.println("Bouton Quitter cliqué");
+
         try {
-            // Arrêter la boucle de jeu
-            if (gameLoop != null) {
-                gameLoop.stop();
-            }
+            // Récupérer la fenêtre actuelle (fenêtre du jeu)
+            Stage gameStage = (Stage) canvas.getScene().getWindow();
 
-            // Vider les touches pressées
-            keysPressed.clear();
+            // Fermer la fenêtre du jeu
+            gameStage.close();
 
-            // Récupérer la fenêtre actuelle
-            Stage stage = (Stage) canvas.getScene().getWindow();
-
-            // Charger la page d'accueil
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Accueil.fxml"));
+            // Charger la page d'accueil depuis les ressources
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
             Parent root = loader.load();
 
-            // Créer et afficher la nouvelle scène
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            // Créer une nouvelle fenêtre (Stage) pour la page d'accueil
+            Stage accueilStage = new Stage();
+            accueilStage.setTitle("Super Bomberman FX");
+            accueilStage.setScene(new Scene(root));
+            accueilStage.setFullScreen(true);
+            accueilStage.setFullScreenExitHint("Appuyez sur ÉCHAP pour quitter le plein écran");
+
+            // Afficher la nouvelle fenêtre d'accueil
+            accueilStage.show();
 
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de la page d'accueil : " + e.getMessage());
             e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la fermeture du jeu : " + e.getMessage());
-            e.printStackTrace();
         }
     }
+
+
 
     /**
      * Gère les événements de touche pressée.
@@ -231,7 +228,7 @@ public class GameController extends BorderPane {
      */
     private void onKeyPressed(KeyEvent event) {
         // Gérer la touche Échap pour afficher/masquer le menu de pause
-        if (event.getCode() == KeyCode.ESCAPE) {
+        if (event.getCode() == KeyCode.A) {
             togglePauseMenu();
             return;
         }
