@@ -13,12 +13,14 @@ import java.util.ArrayList;
 
 public class Explosion extends Entity {
 
-
     private final long startTime;
+    private Player sourcePlayer;
 
-    public Explosion (double x, double y) {
+    public Explosion (double x, double y, Player sourcePlayer) {
         super(x - Constants.TILE_SIZE, y - Constants.TILE_SIZE, 3 * Constants.TILE_SIZE);
         this.startTime = System.currentTimeMillis();
+        currentImage = Assets.explosion;
+        this.sourcePlayer = sourcePlayer;
     }
 
     @Override
@@ -32,6 +34,11 @@ public class Explosion extends Entity {
     }
 
     private void destroyEntities() {
+
+        ArrayList<Entity> staticEntities = new ArrayList<>(GameController.getInstance().getLevel().getStaticEntities());
+        ArrayList<Entity> dynamicEntities = new ArrayList<>(GameController.getInstance().getLevel().getDynamicEntities());
+        ArrayList<Player> players = new ArrayList<>(GameController.getInstance().getLevel().getPlayers());
+
 
         Entity topEntity = new Entity(x + Constants.TILE_SIZE * 1.1, y, Constants.TILE_SIZE * 0.8) {
             @Override public void update() {}
@@ -58,30 +65,39 @@ public class Explosion extends Entity {
             @Override public void render(GraphicsContext gc) {}
         };
 
-
-
-        for (Entity entity : new ArrayList<>(GameController.getInstance().getLevel().getStaticEntities())) {
+        for (Entity entity : staticEntities) {
             if (CollisionCalculator.isColliding(entity, topEntity) || CollisionCalculator.isColliding(entity, centerEntity)
                 || CollisionCalculator.isColliding(entity, leftEntity) || CollisionCalculator.isColliding(entity, rightEntity)
                 || CollisionCalculator.isColliding(entity, downEntity)) {
                 if (entity instanceof Wall w) {
-                    if (w.isBreakable()) w.breakWall();
+                    if (w.isBreakable()) {
+                        w.breakWall();
+                        sourcePlayer.setScore(sourcePlayer.getScore() + 100);
+                    }
                 }
             }
         }
 
-        for (Player player : GameController.getInstance().getLevel().getPlayers()) {
-            if (CollisionCalculator.isColliding(player, this)) {
-                player.removeLife();
-                System.out.println("Perds une vie");
+        for (Entity entity : dynamicEntities) {
+            if (CollisionCalculator.isColliding(entity, topEntity) || CollisionCalculator.isColliding(entity, centerEntity)
+                    || CollisionCalculator.isColliding(entity, leftEntity) || CollisionCalculator.isColliding(entity, rightEntity)
+                    || CollisionCalculator.isColliding(entity, downEntity)) {
+                if (entity instanceof Monster m) {
+                    m.kill();
+                    sourcePlayer.setScore(sourcePlayer.getScore() + 500);
+                }
             }
         }
 
-
+        for (Player player : players) {
+            if (CollisionCalculator.isColliding(player, this)) {
+                player.removeLife();
+            }
+        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.drawImage(Assets.explosion, x, y, size, size);
+        gc.drawImage(currentImage, x, y, size, size);
     }
 }

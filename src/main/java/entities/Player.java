@@ -2,12 +2,13 @@ package entities;
 
 import controller.GameController;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import ui.Assets;
-import ui.CollisionCalculator;
 import ui.Constants;
-
-import static ui.CollisionCalculator.isColliding;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class Player extends Entity {
 
@@ -15,12 +16,22 @@ public class Player extends Entity {
     private int currentDeplacementCounter = 0;
     private int currentDeplacementDirection;
     private boolean movingUp, movingDown, movingLeft, movingRight;
-    private Image currentImage;
-    private int nbLives = 5;
+    private SimpleIntegerProperty nbLives, score;
+    private int numberPlayer;
+    private boolean canPlaceBomb = true, canLoseLife = true;
 
     public Player(double x, double y) {
         super(x, y, 0.8 * Constants.TILE_SIZE);
-        this.currentImage = Assets.player1Down;  // direction initiale (exemple)
+        this.numberPlayer = 1;
+        nbLives = new SimpleIntegerProperty(5);
+        score = new SimpleIntegerProperty(0);
+    }
+
+    public Player(double x, double y, int numberPlayer) {
+        super(x, y, 0.8 * Constants.TILE_SIZE);
+        this.numberPlayer = numberPlayer;
+        nbLives = new SimpleIntegerProperty(5);
+        score = new SimpleIntegerProperty(0);
     }
 
     // Méthodes pour gérer les entrées clavier (appelées depuis le contrôleur)
@@ -31,8 +42,6 @@ public class Player extends Entity {
 
     @Override
     public void update() {
-
-        // Si le joueur ne bouge plus permet de lancer un déplacement
         if (currentDeplacementCounter <= 0) {
             double dx = 0, dy = 0;
             if (movingUp) {
@@ -41,45 +50,25 @@ public class Player extends Entity {
                 currentDeplacementDirection = 1; // Haut
             }
             else if (movingDown) {
-                if (isColliding(this, new Player(x, y + Constants.TILE_SIZE))) {
-                    return;
-                }
                 dy += Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
                 currentDeplacementDirection = 2; // Bas
             }
             else if (movingLeft) {
-                if (isColliding(this, new Player(x - Constants.TILE_SIZE, y))) {
-                    return;
-                }
                 dx -= Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
                 currentDeplacementDirection = 3; // Gauche
             }
             else if (movingRight) {
-                if (isColliding(this, new Player(x - Constants.TILE_SIZE, y))) {
-                    return;
-                }
                 dx += Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
-                currentDeplacementDirection = 4; // Bas
+                currentDeplacementDirection = 4; // Droite
+            } else {
+                return;
             }
-            x = x + dx;
-            y = y + dy;
-            for (Entity entity : GameController.getInstance().getLevel().getStaticEntities()) {
-                if (CollisionCalculator.isColliding(this, entity)) {
-                    currentDeplacementCounter = 0;
-                }
+            if (this.collideWhenGoTo(x + dx, y + dy)) {
+                currentDeplacementCounter = 0;
             }
-            for (Entity entity : GameController.getInstance().getLevel().getDynamicEntities()) {
-                if (CollisionCalculator.isColliding(this, entity)) {
-                    currentDeplacementCounter = 0;
-                }
-            }
-
-            x = x - dx;
-            y = y - dy;
-
 
         } else {
             currentDeplacementCounter--;
@@ -95,46 +84,64 @@ public class Player extends Entity {
         }
     }
 
-    public void removeLife() {
-        this.nbLives--;
-    }
-
     public void placeBomb() {
-        double gap = Constants.TILE_SIZE * 0.1;
-        Bomb bomb = new Bomb(x - gap, y - gap);
-        GameController.getInstance().getLevel().getDynamicEntities().add(bomb);
-        System.out.println("Bombe posée à : x=" + bomb.getX() + ", y=" + bomb.getY());
+        if (canPlaceBomb) {
+            // Pose la bombe
+            double gap = Constants.TILE_SIZE * 0.1;
+            Bomb bomb = new Bomb(x - gap, y - gap, this);
+            GameController.getInstance().getLevel().getDynamicEntities().add(bomb);
+
+            // Active le cooldown
+            canPlaceBomb = false;
+            Timeline cooldown = new Timeline(new KeyFrame(Duration.seconds(2), e -> canPlaceBomb = true));
+            cooldown.setCycleCount(1);
+            cooldown.play();
+        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
-         if (movingUp) {
-             currentImage = Assets.player1Up;
-         }
-         else if (movingRight) {
-             currentImage = Assets.player1Right;
-         }
-         else if (movingLeft) {
-             currentImage = Assets.player1Left;
-         }
-         else if (movingDown) {
-             currentImage = Assets.player1Down;
-         }
-         gc.drawImage(currentImage, x, y, size, size);
-
-//         Affiche la hitbox
-//         double radius = 2;
-//         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-//         gc.fillOval(x - radius + size, y - radius + size, radius * 2, radius * 2);
-
+        // Images de base si pas de déplacement
+        if (numberPlayer == 1) {
+            if (currentDeplacementDirection == 1) {
+                currentImage = Assets.player1Up;
+            } else if (currentDeplacementDirection == 4) {
+                currentImage = Assets.player1Right;
+            } else if (currentDeplacementDirection == 3) {
+                currentImage = Assets.player1Left;
+            } else {
+                currentImage = Assets.player1Down;
+            }
+        } else {
+            if (currentDeplacementDirection == 1) {
+                currentImage = Assets.player1Up;
+            } else if (currentDeplacementDirection == 4) {
+                currentImage = Assets.player1Right;
+            } else if (currentDeplacementDirection == 3) {
+                currentImage = Assets.player1Left;
+            } else {
+                currentImage = Assets.player1Down;
+            }
+        }
+        gc.drawImage(currentImage, x, y, size, size);
     }
 
+    public int getScore() {return score.getValue();}
+    public void setScore(int score) {this.score.setValue(score);}
+    public IntegerProperty getScoreProperty() {return score;}
+    public int getNbLives() {return nbLives.getValue();}
+    public void setNbLives(int nbLives) {this.nbLives.setValue(nbLives);}
+    public IntegerProperty getNbLivesProperty() {return nbLives;}
+    public void removeLife() {
+        if (canLoseLife && nbLives.getValue() > 0) {
+            // Enleve la vie
+            nbLives.setValue(nbLives.getValue() - 1);
 
-    public int getNbLives() {
-        return nbLives;
-    }
-
-    public void setNbLives(int nbLives) {
-        this.nbLives = nbLives;
+            // Active le cooldown
+            canLoseLife = false;
+            Timeline cooldown = new Timeline(new KeyFrame(Duration.seconds(2), e -> canLoseLife = true));
+            cooldown.setCycleCount(1);
+            cooldown.play();
+        }
     }
 }

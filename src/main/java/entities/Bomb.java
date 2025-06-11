@@ -8,13 +8,13 @@ import ui.Constants;
 
 
 public class Bomb extends Entity {
-    private Image currentImage;
     private final long startTime;
     private int state = 0; // Étapes : 0 → image1, 1 → image2, 2 → image3, 3 → fin
+    private Player sourcePlayer;
 
-    public Bomb(double x, double y) {
+    public Bomb(double x, double y, Player sourcePlayer) {
         super(x, y, Constants.TILE_SIZE);
-
+        this.sourcePlayer = sourcePlayer;
         this.x = (int) ((x+10) / Constants.TILE_SIZE) * Constants.TILE_SIZE;
         this.y = (int) ((y+10) / Constants.TILE_SIZE) * Constants.TILE_SIZE;
         this.startTime = System.currentTimeMillis();
@@ -45,7 +45,7 @@ public class Bomb extends Entity {
 
     private void explode() {
         GameController.getInstance().getLevel().getDynamicEntities().remove(this);
-        Explosion explosion = new Explosion(x, y);
+        Explosion explosion = new Explosion(x, y, sourcePlayer);
         GameController.getInstance().getLevel().getDynamicEntities().add(explosion);
     }
 

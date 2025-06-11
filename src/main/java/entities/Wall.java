@@ -8,7 +8,6 @@ import ui.Constants;
 
 public class Wall extends Entity {
 
-    private Image currentImage;
     boolean breakable;
 
     public boolean isBreakable() {
@@ -45,7 +44,6 @@ public class Wall extends Entity {
         if (breakable) {
             currentImage = Assets.wallBreakable;
         }
-
         else {
             currentImage = Assets.wallSprite;
         }
