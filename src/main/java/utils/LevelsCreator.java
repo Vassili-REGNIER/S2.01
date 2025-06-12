@@ -1,31 +1,66 @@
 package utils;
 
 import entities.*;
-import ui.CollisionCalculator;
-import ui.Constants;
-import ui.Level;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static ui.Constants.TILE_SIZE;
+import static utils.Constants.TILE_SIZE;
 
-
+/**
+ * Classe utilitaire pour la création et la gestion des niveaux du jeu.
+ *
+ * <p>Cette classe gère la génération aléatoire des niveaux,
+ * leur stockage dans une liste statique, ainsi que la gestion du niveau courant.</p>
+ *
+ * <p>Elle définit aussi des constantes pour les positions de départ des joueurs.</p>
+ */
 public class LevelsCreator {
+    /**
+     * Niveau courant en cours de jeu.
+     */
     public static Level currentLevel;
 
+    /**
+     * Liste de tous les niveaux disponibles.
+     */
     public static ArrayList<Level> levels;
 
+    /**
+     * Position X de départ du joueur 1.
+     */
     public static final double PLAYER1_X = TILE_SIZE * 1.1;
+
+    /**
+     * Position Y de départ du joueur 1.
+     */
     public static final double PLAYER1_Y = TILE_SIZE * 1.1;
+
+    /**
+     * Position X de départ du joueur 2.
+     */
     public static final double PLAYER2_X = TILE_SIZE * 13.1;
+
+    /**
+     * Position Y de départ du joueur 2.
+     */
     public static final double PLAYER2_Y = TILE_SIZE * 11.1;
 
+    /**
+     * Retourne le niveau courant.
+     *
+     * @return le niveau courant
+     */
     public static Level getCurrentLevel() {
         System.out.println("getCurrentLevel() : " + currentLevel);
         return currentLevel;
     }
 
+    /**
+     * Définit le niveau courant à partir de son numéro.
+     *
+     * @param level numéro du niveau à définir comme courant
+     */
     public static void setCurrentLevel(int level) {
         for (Level l : levels) {
             if (l.getLevel() == level) {
@@ -36,9 +71,15 @@ public class LevelsCreator {
         }
     }
 
+    /**
+     * Initialise la liste des niveaux avec des niveaux générés aléatoirement.
+     * <p>
+     * Crée trois niveaux, ajoute les joueurs avec leurs positions de départ,
+     * puis définit le premier niveau comme niveau courant.
+     * </p>
+     */
     public static void initLevels() {
         levels = new ArrayList<>();
-
 
         Level level1 = generateRandomLevel(1);
         level1.addPlayer(new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1, 1));
@@ -51,7 +92,6 @@ public class LevelsCreator {
         level3.addPlayer(new Player(Constants.TILE_SIZE * 1.1, Constants.TILE_SIZE * 1.1));
         level3.addPlayer(new Player(Constants.TILE_SIZE * 13.1, Constants.TILE_SIZE * 11.1, 2));
 
-
         levels.add(level1);
         levels.add(level2);
         levels.add(level3);
@@ -62,11 +102,15 @@ public class LevelsCreator {
         System.out.println("Current level: " + currentLevel);
     }
 
-
+    /**
+     * Génère une grille de base pour un niveau, avec les murs autour et une grille de murs centraux.
+     *
+     * @return liste des entités statiques représentant la grille de base du niveau
+     */
     public static ArrayList<Entity> basicGrid() {
         ArrayList<Entity> staticEntities = new ArrayList<>();
 
-        // --- 1. Génération des murs au centre (grille) ---
+        // Génération des murs centraux (grille)
         double width = TILE_SIZE;
         double height = TILE_SIZE;
         for (int i = 0; i <= 4; ++i) {
@@ -80,15 +124,13 @@ public class LevelsCreator {
             height += TILE_SIZE;
         }
 
-        // --- 2. Génération des murs aux bords corrigée ---
-        // Murs horizontaux (haut et bas)
+        // Génération des murs aux bords (haut, bas, gauche, droite)
         for (int x = 0; x <= 17; x++) {
             int posX = x * TILE_SIZE;
             staticEntities.add(new Wall(posX, 0, false));                // bord haut
             staticEntities.add(new Wall(posX, 610 - TILE_SIZE, false));  // bord bas
         }
 
-        // Murs verticaux (gauche et droite)
         for (int y = 0; y <= 15; y++) {
             int posY = y * TILE_SIZE;
             staticEntities.add(new Wall(0, posY, false));                // bord gauche
@@ -98,6 +140,16 @@ public class LevelsCreator {
         return staticEntities;
     }
 
+    /**
+     * Génère un niveau aléatoire avec un certain nombre de murs destructibles et de monstres.
+     *
+     * <p>Le niveau est généré en tentant plusieurs fois (maxAttempts)
+     * de placer des murs et monstres aléatoirement sans collision.</p>
+     *
+     * @param levelNumber numéro du niveau à générer
+     * @return un objet Level généré aléatoirement
+     * @throws IllegalStateException si la génération échoue après plusieurs tentatives
+     */
     public static Level generateRandomLevel(int levelNumber) {
         final int maxAttempts = 5;
         final int triesMax = 100;
@@ -186,4 +238,3 @@ public class LevelsCreator {
         throw new IllegalStateException("Impossible de générer un niveau valide après " + maxAttempts + " tentatives.");
     }
 }
-

@@ -1,0 +1,94 @@
+@startuml bombermanfx_project
+
+' Définition des packages
+package bombermanfx {
+    class Accueil
+    class AnimationLogo
+    class Main
+    class MusicPlayer
+}
+
+package controller {
+    class AccueilController
+    class GameController
+}
+
+package entities {
+    abstract class Entity {
+        - double x
+        - double y
+        - double size
+        + double getX()
+        + double getY()
+        + double getSize()
+    }
+
+    class Bomb
+    class Explosion
+    class Monster
+    class Player
+    class Wall
+
+    Bomb --|> Entity
+    Explosion --|> Entity
+    Monster --|> Entity
+    Player --|> Entity
+    Wall --|> Entity
+}
+
+package utils {
+    class Assets
+    class CollisionCalculator {
+        + static boolean isColliding(Entity, Entity)
+    }
+    class Constants {
+        + static final int WINDOW_WIDTH
+        + static final int WINDOW_HEIGHT
+        + static final int TILE_SIZE
+    }
+    class Level {
+        - int level
+        - ArrayList<Entity> staticEntities
+        - ArrayList<Entity> dynamicEntities
+        - ArrayList<Player> players
+        + reset()
+        + addPlayer(Player)
+        + getPlayers()
+        + getLevel()
+        + setLevel(int)
+        + getNbJoueur()
+    }
+    class LevelsCreator {
+        + static Level currentLevel
+        + static ArrayList<Level> levels
+        + static final double PLAYER1_X
+        + static final double PLAYER1_Y
+        + static final double PLAYER2_X
+        + static final double PLAYER2_Y
+        + static Level getCurrentLevel()
+        + static void setCurrentLevel(int)
+        + static void initLevels()
+        + static ArrayList<Entity> basicGrid()
+        + static Level generateRandomLevel(int)
+    }
+
+    Level "1" *-- "0..*" Entity : staticEntities
+    Level "1" *-- "0..*" Entity : dynamicEntities
+    Level "1" *-- "0..*" Player : players
+
+    LevelsCreator --> Level : currentLevel
+    LevelsCreator --> Level : levels
+    LevelsCreator ..> Entity
+    LevelsCreator ..> Player
+    LevelsCreator ..> CollisionCalculator
+    LevelsCreator ..> Constants
+
+    CollisionCalculator ..> Entity
+}
+
+' Relations entre packages et classes principales (optionnel)
+controller ..> bombermanfx : utilise
+controller ..> entities : manipule
+controller ..> utils : utilise
+
+@enduml

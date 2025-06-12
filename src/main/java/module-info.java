@@ -5,7 +5,6 @@ module bombermanfx {
     requires javafx.media;
     requires com.fasterxml.jackson.annotation;    // <--- Ajouté pour la lecture audio
 
-    opens ui to javafx.fxml;            // pour charger Game.fxml
     opens controller to javafx.fxml;    // pour que le contrôleur soit accessible au FXML
     opens bombermanfx to javafx.fxml;
 
@@ -13,4 +12,5 @@ module bombermanfx {
     exports entities;      // optionnel, si utilisé dans d'autres modules
     exports utils;         // optionnel, idem
     exports bombermanfx;
+    opens utils to javafx.fxml;
 }

@@ -2,27 +2,57 @@ package entities;
 
 import controller.GameController;
 import javafx.scene.canvas.GraphicsContext;
-import ui.Assets;
-import ui.Constants;
+import utils.Assets;
+import utils.Constants;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import ui.Level;
 
+/**
+ * Classe représentant un joueur dans le jeu.
+ * Un joueur peut se déplacer, poser des bombes, perdre des vies, accumuler des points, et réinitialiser sa position.
+ */
 public class Player extends Entity {
 
-    private double speed = (double) Constants.TILE_SIZE / 5;      // vitesse de déplacement en pixels par frame
+    /** Vitesse de déplacement du joueur (en pixels par frame). */
+    private double speed = (double) Constants.TILE_SIZE / 5;
+
+    /** Nombre de frames restantes avant de recalculer un déplacement. */
     private int currentDeplacementCounter = 0;
+
+    /** Direction actuelle du déplacement (1=haut, 2=bas, 3=gauche, 4=droite). */
     private int currentDeplacementDirection;
+
+    /** Indicateurs de mouvement en fonction des touches pressées. */
     private boolean movingUp, movingDown, movingLeft, movingRight;
-    private SimpleIntegerProperty nbLives, score;
+
+    /** Nombre de vies du joueur. */
+    private SimpleIntegerProperty nbLives;
+
+    /** Score du joueur. */
+    private SimpleIntegerProperty score;
+
+    /** Numéro du joueur (1 ou 2). */
     private int numberPlayer;
-    private boolean canPlaceBomb = true, canLoseLife = true;
+
+    /** Indique si le joueur peut poser une bombe (cooldown). */
+    private boolean canPlaceBomb = true;
+
+    /** Indique si le joueur peut perdre une vie (invincibilité temporaire après dégât). */
+    private boolean canLoseLife = true;
+
+    /** Position initiale du joueur. */
     private final double initialX;
     private final double initialY;
 
+    /**
+     * Construit un joueur à la position spécifiée.
+     *
+     * @param x Position x initiale.
+     * @param y Position y initiale.
+     */
     public Player(double x, double y) {
         super(x, y, 0.8 * Constants.TILE_SIZE);
         this.numberPlayer = 1;
@@ -32,6 +62,13 @@ public class Player extends Entity {
         score = new SimpleIntegerProperty(0);
     }
 
+    /**
+     * Construit un joueur à la position spécifiée, en précisant le numéro du joueur.
+     *
+     * @param x            Position x initiale.
+     * @param y            Position y initiale.
+     * @param numberPlayer Numéro du joueur (1 ou 2).
+     */
     public Player(double x, double y, int numberPlayer) {
         super(x, y, 0.8 * Constants.TILE_SIZE);
         this.initialX = x;
@@ -41,12 +78,37 @@ public class Player extends Entity {
         score = new SimpleIntegerProperty(0);
     }
 
-    // Méthodes pour gérer les entrées clavier (appelées depuis le contrôleur)
+    /**
+     * Définit si le joueur est en train d'essayer de monter.
+     *
+     * @param moving Vrai si le joueur se déplace vers le haut.
+     */
     public void setMovingUp(boolean moving) { movingUp = moving; }
+
+    /**
+     * Définit si le joueur est en train d'essayer de descendre.
+     *
+     * @param moving Vrai si le joueur se déplace vers le bas.
+     */
     public void setMovingDown(boolean moving) { movingDown = moving; }
+
+    /**
+     * Définit si le joueur est en train d'essayer d'aller à gauche.
+     *
+     * @param moving Vrai si le joueur se déplace vers la gauche.
+     */
     public void setMovingLeft(boolean moving) { movingLeft = moving; }
+
+    /**
+     * Définit si le joueur est en train d'essayer d'aller à droite.
+     *
+     * @param moving Vrai si le joueur se déplace vers la droite.
+     */
     public void setMovingRight(boolean moving) { movingRight = moving; }
 
+    /**
+     * Met à jour la position du joueur en fonction des entrées clavier et gère les collisions.
+     */
     @Override
     public void update() {
         if (currentDeplacementCounter <= 0) {
@@ -54,25 +116,23 @@ public class Player extends Entity {
             if (movingUp) {
                 dy -= Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
-                currentDeplacementDirection = 1; // Haut
-            }
-            else if (movingDown) {
+                currentDeplacementDirection = 1;
+            } else if (movingDown) {
                 dy += Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
-                currentDeplacementDirection = 2; // Bas
-            }
-            else if (movingLeft) {
+                currentDeplacementDirection = 2;
+            } else if (movingLeft) {
                 dx -= Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
-                currentDeplacementDirection = 3; // Gauche
-            }
-            else if (movingRight) {
+                currentDeplacementDirection = 3;
+            } else if (movingRight) {
                 dx += Constants.TILE_SIZE;
                 currentDeplacementCounter = 5;
-                currentDeplacementDirection = 4; // Droite
+                currentDeplacementDirection = 4;
             } else {
                 return;
             }
+
             if (this.collideWhenGoTo(x + dx, y + dy)) {
                 currentDeplacementCounter = 0;
             }
@@ -91,14 +151,16 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Permet au joueur de poser une bombe si le cooldown le permet.
+     * Une fois posée, un cooldown de 2 secondes empêche la pose d'une autre bombe immédiatement.
+     */
     public void placeBomb() {
         if (canPlaceBomb) {
-            // Pose la bombe
             double gap = Constants.TILE_SIZE * 0.1;
             Bomb bomb = new Bomb(x - gap, y - gap, this);
             GameController.getInstance().getLevel().getDynamicEntities().add(bomb);
 
-            // Active le cooldown
             canPlaceBomb = false;
             Timeline cooldown = new Timeline(new KeyFrame(Duration.seconds(2), e -> canPlaceBomb = true));
             cooldown.setCycleCount(1);
@@ -106,45 +168,64 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Affiche le joueur à l'écran, avec l'image appropriée selon sa direction ou son état.
+     *
+     * @param gc Contexte graphique.
+     */
     @Override
     public void render(GraphicsContext gc) {
-        // Images de base si pas de déplacement
         if (numberPlayer == 1) {
-            if (currentDeplacementDirection == 1) {
-                currentImage = Assets.player1Up;
-            } else if (currentDeplacementDirection == 4) {
-                currentImage = Assets.player1Right;
-            } else if (currentDeplacementDirection == 3) {
-                currentImage = Assets.player1Left;
-            } else {
-                currentImage = Assets.player1Down;
-            }
+            if (!canLoseLife) currentImage = Assets.player1Dead;
+            else if (currentDeplacementDirection == 1) currentImage = Assets.player1Up;
+            else if (currentDeplacementDirection == 4) currentImage = Assets.player1Right;
+            else if (currentDeplacementDirection == 3) currentImage = Assets.player1Left;
+            else currentImage = Assets.player1Down;
+
         } else {
-            if (currentDeplacementDirection == 1) {
-                currentImage = Assets.player2Up;
-            } else if (currentDeplacementDirection == 4) {
-                currentImage = Assets.player2Right;
-            } else if (currentDeplacementDirection == 3) {
-                currentImage = Assets.player2Left;
-            } else {
-                currentImage = Assets.player2Down;
-            }
+            if (!canLoseLife) currentImage = Assets.player2Dead;
+            else if (currentDeplacementDirection == 1) currentImage = Assets.player2Up;
+            else if (currentDeplacementDirection == 4) currentImage = Assets.player2Right;
+            else if (currentDeplacementDirection == 3) currentImage = Assets.player2Left;
+            else currentImage = Assets.player2Down;
         }
         gc.drawImage(currentImage, x, y, size, size);
     }
 
-    public int getScore() {return score.getValue();}
-    public void setScore(int score) {this.score.setValue(score);}
-    public IntegerProperty getScoreProperty() {return score;}
-    public int getNbLives() {return nbLives.getValue();}
-    public void setNbLives(int nbLives) {this.nbLives.setValue(nbLives);}
-    public IntegerProperty getNbLivesProperty() {return nbLives;}
+    /** @return Score actuel du joueur. */
+    public int getScore() { return score.getValue(); }
+
+    /**
+     * Définit le score du joueur.
+     * @param score Nouveau score.
+     */
+    public void setScore(int score) { this.score.setValue(score); }
+
+    /**
+     * @return Propriété JavaFX associée au score du joueur.
+     */
+    public IntegerProperty getScoreProperty() { return score; }
+
+    /** @return Nombre de vies restantes du joueur. */
+    public int getNbLives() { return nbLives.getValue(); }
+
+    /**
+     * Définit le nombre de vies du joueur.
+     * @param nbLives Nouveau nombre de vies.
+     */
+    public void setNbLives(int nbLives) { this.nbLives.setValue(nbLives); }
+
+    /**
+     * @return Propriété JavaFX associée au nombre de vies du joueur.
+     */
+    public IntegerProperty getNbLivesProperty() { return nbLives; }
+
+    /**
+     * Retire une vie au joueur, puis active un délai d'invincibilité temporaire.
+     */
     public void removeLife() {
         if (canLoseLife && nbLives.getValue() > 0) {
-            // Enleve la vie
             nbLives.setValue(nbLives.getValue() - 1);
-
-            // Active le cooldown
             canLoseLife = false;
             Timeline cooldown = new Timeline(new KeyFrame(Duration.seconds(2), e -> canLoseLife = true));
             cooldown.setCycleCount(1);
@@ -152,6 +233,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Réinitialise le joueur à sa position initiale et restaure ses valeurs par défaut.
+     */
     public void reset() {
         this.x = initialX;
         this.y = initialY;

@@ -18,59 +18,91 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import ui.Assets;
-import ui.Constants;
-import ui.Level;
+import utils.Assets;
+import utils.Level;
 import utils.LevelsCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Contrôleur principal du jeu BombermanFX. Gère l'initialisation du niveau,
+ * la boucle de jeu, le rendu graphique, les entrées clavier, le placement des bombes,
+ * la vérification des conditions de victoire, ainsi que les actions utilisateur
+ * comme redémarrer une partie ou retourner à l'accueil.
+ *
+ * Ce contrôleur suit le patron Singleton via l'attribut statique {@code instance}.
+ */
 public class GameController extends BorderPane {
 
-    // Permet d'accèder à l'instance de GameController depuis
-    // n'importe où dans le projet
+    /**
+     * Instance unique de GameController accessible globalement.
+     */
     private static GameController instance;
 
+    /** Label affichant les vies du Joueur 1. */
     @FXML
     Label vieJ1Label;
+
+    /** Label affichant les vies du Joueur 2. */
     @FXML
     Label vieJ2Label;
+
+    /** Label affichant le score du Joueur 1. */
     @FXML
     Label scoreJ1Label;
+
+    /** Label affichant le score du Joueur 2. */
     @FXML
     Label scoreJ2Label;
+
+    /** Label affichant le temps écoulé. */
     @FXML
     Label timeLabel;
 
+    /** Canvas sur lequel est dessiné le jeu. */
     @FXML
     private Canvas canvas;
+
     private GraphicsContext gc;
-    private Player player2;
     private Player player1;
-
+    private Player player2;
     private Level level;
-
     private IntegerProperty timeElapsed = new SimpleIntegerProperty();
-
     private final Set<KeyCode> keysPressed = new HashSet<>();
-
     private AnimationTimer gameLoop;
     private boolean gameEnded = false;
     private String winnerText = "";
 
-    public static GameController getInstance() {return instance; };
-    public Level getLevel() {return level;}
+    /**
+     * Retourne l'instance unique du contrôleur.
+     *
+     * @return L'instance de GameController.
+     */
+    public static GameController getInstance() { return instance; }
 
+    /**
+     * Retourne le niveau courant.
+     *
+     * @return Le niveau courant.
+     */
+    public Level getLevel() { return level; }
+
+    /**
+     * Constructeur par défaut. Initialise l'instance statique.
+     */
     public GameController() {
         instance = this;
     }
 
+    /**
+     * Initialise le jeu : charge les ressources graphiques, initialise le niveau,
+     * configure les entrées clavier, démarre le timer et la boucle principale.
+     */
     @FXML
     public void initialize() {
 
@@ -101,9 +133,6 @@ public class GameController extends BorderPane {
             scoreJ2Label.textProperty().bind(player2.getScoreProperty().asString());
         }
 
-        //System.out.println("Nb entitées dynamiques" + level.getDynamicEntities().size());
-        //System.out.println("Nb entitées statiques" + level.getStaticEntities().size());
-
         // 4. Gérer les entrées clavier
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -128,6 +157,11 @@ public class GameController extends BorderPane {
 
     }
 
+    /**
+     * Crée et configure la boucle principale du jeu.
+     *
+     * @return L'AnimationTimer représentant la boucle de jeu.
+     */
     private AnimationTimer createGameLoop() {
         return new AnimationTimer() {
             private long lastUpdate = 0;
@@ -147,6 +181,9 @@ public class GameController extends BorderPane {
         };
     }
 
+    /**
+     * Démarre le timer pour afficher le temps écoulé.
+     */
     private void startTimer() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> timeElapsed.set(timeElapsed.get() + 1)));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -160,18 +197,31 @@ public class GameController extends BorderPane {
     }
 
 
+    /**
+     * Méthode appelée lorsqu'une touche est pressée.
+     *
+     * @param event L'événement clavier.
+     */
     private void onKeyPressed(KeyEvent event) {
         keysPressed.add(event.getCode());
         updatePlayerMovement();
         updateBombePlacement();
     }
 
+    /**
+     * Méthode appelée lorsqu'une touche est relâchée.
+     *
+     * @param event L'événement clavier.
+     */
     private void onKeyReleased(KeyEvent event) {
         keysPressed.remove(event.getCode());
         updatePlayerMovement();
         updateBombePlacement();
     }
 
+    /**
+     * Met à jour l'état des déplacements des joueurs selon les touches pressées.
+     */
     private void updatePlayerMovement() {
         player1.setMovingUp(keysPressed.contains(KeyCode.Z));
         player1.setMovingDown(keysPressed.contains(KeyCode.S));
@@ -186,6 +236,9 @@ public class GameController extends BorderPane {
         }
     }
 
+    /**
+     * Gère la pose de bombes pour les joueurs.
+     */
     private void updateBombePlacement() {
         if (keysPressed.contains(KeyCode.E)) {
             player1.placeBomb();
@@ -196,6 +249,9 @@ public class GameController extends BorderPane {
         }
     }
 
+    /**
+     * Met à jour l'état de toutes les entités du jeu à chaque itération.
+     */
     private void update() {
         player1.update();
         if (player2 != null) {
@@ -205,10 +261,12 @@ public class GameController extends BorderPane {
         for (Entity entity : new ArrayList<Entity>(level.getDynamicEntities())) {
             entity.update();
         }
-
         checkWinCondition();
     }
 
+    /**
+     * Dessine l'état courant du jeu sur le canvas.
+     */
     private void render() {
         // Effacer l’ancienne frame
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -239,6 +297,9 @@ public class GameController extends BorderPane {
         }
     }
 
+    /**
+     * Vérifie si une condition de victoire ou de défaite est remplie.
+     */
     private void checkWinCondition() {
         if (player2 != null) {
             if (player1.getNbLives() <= 0) {
@@ -255,17 +316,23 @@ public class GameController extends BorderPane {
                     nbFantomes++;
                 }
             }
-            System.out.println(nbFantomes);
+
             if (player1.getNbLives() <= 0) {
                 winnerText = "Game Over";
                 endGame();
-            } else if (level.getDynamicEntities().isEmpty()) {
+            } else if (nbFantomes == 0) {
                 winnerText = "Vous avez gagné !";
                 endGame();
             }
         }
     }
 
+    /**
+     * Méthode appelée lors du clic sur le bouton "Recommencer".
+     * Réinitialise l'état du jeu et redémarre la boucle.
+     *
+     * @param event L'événement déclenché par le clic.
+     */
     @FXML
     private void onRestartClicked(ActionEvent event) {
         if (gameLoop != null) gameLoop.stop();
@@ -296,6 +363,13 @@ public class GameController extends BorderPane {
         System.out.println("restartClicked");
     }
 
+
+    /**
+     * Méthode appelée lors du clic sur le bouton "Retour à l'accueil".
+     * Ferme la fenêtre actuelle et recharge l'écran d'accueil.
+     *
+     * @param event L'événement déclenché par le clic.
+     */
     @FXML
     private void onRetourAccueilClicked(ActionEvent event) {
         try {
@@ -315,6 +389,9 @@ public class GameController extends BorderPane {
         }
     }
 
+    /**
+     * Termine la partie et arrête la boucle de jeu.
+     */
     private void endGame() {
         gameEnded = true;
         gameLoop.stop();
