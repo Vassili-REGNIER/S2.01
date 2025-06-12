@@ -5,6 +5,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,9 +14,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import utils.Assets;
@@ -68,6 +71,14 @@ public class GameController extends BorderPane {
     @FXML
     private Canvas canvas;
 
+    /** Label affichant titre du score du joueur 2. */
+    @FXML
+    private Text score_p2_title;
+
+    /** Image affichant le nombre de vie du joueur 2. */
+    @FXML
+    ImageView life_p2_title;
+
     private GraphicsContext gc;
     private Player player1;
     private Player player2;
@@ -77,6 +88,7 @@ public class GameController extends BorderPane {
     private AnimationTimer gameLoop;
     private boolean gameEnded = false;
     private String winnerText = "";
+    SimpleBooleanProperty timerEnd = new SimpleBooleanProperty();
 
     /**
      * Retourne l'instance unique du contrôleur.
@@ -120,6 +132,16 @@ public class GameController extends BorderPane {
             // Bind le score et les vies avec l'affichage
             vieJ1Label.textProperty().bind(player1.getNbLivesProperty().asString());
             scoreJ1Label.textProperty().bind(player1.getScoreProperty().asString());
+
+            // Désactives l'affichage des informations du deuxieme joueur
+            vieJ2Label.setManaged(false);
+            scoreJ2Label.setManaged(false);
+            life_p2_title.setManaged(false);
+            score_p2_title.setManaged(false);
+            vieJ2Label.setVisible(false);
+            scoreJ2Label.setVisible(false);
+            life_p2_title.setVisible(false);
+            score_p2_title.setVisible(false);
         }
         else if (level.getNbJoueur() == 2) {
             player1 = level.getPlayers().get(0);
@@ -189,13 +211,13 @@ public class GameController extends BorderPane {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
         timeLabel.textProperty().bind(Bindings.createStringBinding(() -> {
-            int totalSeconds = timeElapsed.get();
+            int totalSeconds = 180 - timeElapsed.get();
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
             return String.format("%02d:%02d", minutes, seconds);
         }, timeElapsed));
+        timerEnd.bind(timeElapsed.greaterThanOrEqualTo(180));
     }
-
 
     /**
      * Méthode appelée lorsqu'une touche est pressée.
@@ -324,6 +346,10 @@ public class GameController extends BorderPane {
                 winnerText = "Vous avez gagné !";
                 endGame();
             }
+        }
+        if (timerEnd.get()) {
+            endGame();
+            winnerText = "Time Elapsed!\nGame Over";
         }
     }
 

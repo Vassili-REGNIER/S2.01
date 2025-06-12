@@ -26,7 +26,7 @@
                 <Text text="SC P1" fill="black" style="-fx-font-weight: bold;" />
                 <Label fx:id="scoreJ1Label" text="0" prefHeight="40" textFill="black"/>
 
-                <Text text="SC P2" fill="black" style="-fx-font-weight: bold;" />
+                <Text text="SC P2" fx:id="score_p2_title" fill="black" style="-fx-font-weight: bold;" />
                 <Label fx:id="scoreJ2Label" text="0" prefHeight="40" textFill="black"/>
 
                 <ImageView fitWidth="40" fitHeight="40">
@@ -45,7 +45,7 @@
 
                 <Label fx:id="vieJ1Label" text="5" prefHeight="40" textFill="black"/>
 
-                <ImageView fitWidth="40" fitHeight="40">
+                <ImageView fitWidth="40" fitHeight="40" fx:id="life_p2_title">
                     <image>
                         <Image url="@images/game/player2Down.png" />
                     </image>
